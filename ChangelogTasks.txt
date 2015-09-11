@@ -10,9 +10,15 @@ CHANGELOG:
             Tom and Tyler:
               -Back end/database/server side development to feed the data and manipulate it as necessary so that 
                 Brendan and Bill will have the data they need
+            Tyler:
+              -General project design and structure, big picture in mind, task assignments 
             
             Those assignments are tentative and all members will be expected to do work on all parts of the project
              as needed by the changing requirements. 
+             
+            Application Structure:
+              Windows > IIS > SQL Server Database > ASP.NET MVC Web Application
+              'WISA' web stack
 
 TASKS:
 Week 3: 9.11.15 - 9.17.15
