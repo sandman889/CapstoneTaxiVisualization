@@ -1,0 +1,14 @@
+CHANGELOG:
+  9.11.15 - File created, all memebers have project building and the data is being worked through by all, 
+            specified tasks are now created and this file will be used. 
+
+TASKS:
+Week 3: 9.11.15 - 9.17.15
+  Tyler:
+    -Begin structuring the server side code to accept the data from the server and from the client side
+  Tom: 
+    -Finish the SQL query construction to create the table properly with the spatial indexes
+  Brendan:
+    -Learn how to create points on a map using d3.js and get them working in a test environment
+  Bill:
+    -Get a leaflet map on the page displaying properly and in the style we want, figure out what data it returns on a selection or if it does at all
