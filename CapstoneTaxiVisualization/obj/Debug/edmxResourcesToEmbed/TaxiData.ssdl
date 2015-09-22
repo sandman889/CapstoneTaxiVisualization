@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TaxiDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Identity_Smaller">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pickup_datetime" Type="datetime" Nullable="false" />
+    <Property Name="dropoff_datetime" Type="datetime" Nullable="false" />
+    <Property Name="passenger_count" Type="varchar" MaxLength="10" />
+    <Property Name="trip_time_in_secs" Type="varchar" MaxLength="10" />
+    <Property Name="trip_distance" Type="varchar" MaxLength="10" />
+    <Property Name="pickup_longitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="pickup_latitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_longitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_latitude" Type="decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="fare_amount" Type="varchar" MaxLength="10" />
+    <Property Name="tip_amount" Type="varchar" MaxLength="10" />
+    <Property Name="tolls_amount" Type="varchar" MaxLength="10" />
+    <Property Name="total_amount" Type="varchar" MaxLength="10" />
+    <Property Name="pickup_geolocation" Type="geography" />
+    <Property Name="dropoff_geolocation" Type="geography" />
+  </EntityType>
+  <EntityContainer Name="TaxiDataModelStoreContainer">
+    <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

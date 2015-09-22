@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TaxiDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Identity_Smaller">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pickup_datetime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="dropoff_datetime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="passenger_count" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="trip_time_in_secs" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="trip_distance" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="pickup_longitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="pickup_latitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_longitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_latitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="fare_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="tip_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="tolls_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="total_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="pickup_geolocation" Type="Geography" />
+    <Property Name="dropoff_geolocation" Type="Geography" />
+  </EntityType>
+  <EntityContainer Name="TaxiDataEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" />
+  </EntityContainer>
+</Schema>
