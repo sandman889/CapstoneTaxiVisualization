@@ -127,11 +127,32 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="GetPointsFromInsideRegion_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Identity_Smaller.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LatLong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaxiData.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TaxiData.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TaxiData.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TaxiData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TaxiData.edmx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\leaflet.css" />
@@ -168,6 +189,23 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <EntityDeploy Include="TaxiData.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TaxiData.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="TaxiData.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TaxiData.edmx</DependentUpon>
+      <LastGenOutput>TaxiData.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="TaxiData.edmx.diagram">
+      <DependentUpon>TaxiData.edmx</DependentUpon>
+    </Content>
+    <Content Include="TaxiData.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TaxiData.edmx</DependentUpon>
+      <LastGenOutput>TaxiData.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,5 +9,11 @@ namespace CapstoneTaxiVisualization.Models
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        public LatLong(double lat, double lng)
+        {
+            Latitude = lat;
+            Longitude = lng;
+        }
     }
 }
