@@ -63,7 +63,7 @@ namespace CapstoneTaxiVisualization.Controllers
         }
 
         [HttpPost]
-        public string GetPointsInPolygonRegion(string startDateString, string endDateString, List<LatLong> boundPoints)
+        public Object GetPointsInPolygonRegion(string startDateString, string endDateString, List<LatLong> boundPoints)
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
@@ -104,7 +104,7 @@ namespace CapstoneTaxiVisualization.Controllers
                 //the final SQL polygon element
                 SqlGeography sqlPoly = geoPoly.ConstructedGeography;
 
-                return JsonConvert.SerializeObject(context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()));
+                return context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString());
             }
         }
     }
