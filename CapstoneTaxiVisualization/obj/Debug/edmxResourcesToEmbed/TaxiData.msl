@@ -33,6 +33,15 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery" />
+    <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="StagingModel.NearestPointQuery_Result">
+          <ScalarProperty Name="DistanceFrom" ColumnName="DistanceFrom" />
+          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -81,6 +81,5 @@ D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\Capston
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Optimization.xml
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Newtonsoft.Json.xml
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Antlr3.Runtime.pdb
-D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.csprojResolveAssemblyReference.cache
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.dll
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.pdb

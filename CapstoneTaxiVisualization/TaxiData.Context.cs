@@ -46,7 +46,7 @@ namespace CapstoneTaxiVisualization
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPointsFromInsideRegion_Result>("GetPointsFromInsideRegion", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter);
         }
     
-        public virtual int NearestPointQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, Nullable<double> pointLatitude, Nullable<double> pointLongitude)
+        public virtual ObjectResult<NearestPointQuery_Result> NearestPointQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string pointAsText)
         {
             var startDateTimeParameter = startDateTime.HasValue ?
                 new ObjectParameter("startDateTime", startDateTime) :
@@ -60,15 +60,11 @@ namespace CapstoneTaxiVisualization
                 new ObjectParameter("distanceInMeters", distanceInMeters) :
                 new ObjectParameter("distanceInMeters", typeof(double));
     
-            var pointLatitudeParameter = pointLatitude.HasValue ?
-                new ObjectParameter("pointLatitude", pointLatitude) :
-                new ObjectParameter("pointLatitude", typeof(double));
+            var pointAsTextParameter = pointAsText != null ?
+                new ObjectParameter("pointAsText", pointAsText) :
+                new ObjectParameter("pointAsText", typeof(string));
     
-            var pointLongitudeParameter = pointLongitude.HasValue ?
-                new ObjectParameter("pointLongitude", pointLongitude) :
-                new ObjectParameter("pointLongitude", typeof(double));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NearestPointQuery", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, pointLatitudeParameter, pointLongitudeParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NearestPointQuery_Result>("NearestPointQuery", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, pointAsTextParameter);
         }
     }
 }

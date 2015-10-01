@@ -24,10 +24,21 @@ namespace CapstoneTaxiVisualization
                     "~/Scripts/map/drawMap.js"
                 ));
 
+            bundles.Add(new ScriptBundle("~/bundles/leaflet-draw")
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/dist", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src/draw", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src/draw/handler", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src/edit", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src/edit/handler", "*.js", false)
+                    .IncludeDirectory("~/Scripts/map/leaflet-draw/src/ext", "*.js", false)
+                    );
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/site.css",
                       "~/Content/leaflet.css",
-                      "~/Content/mapbox.css"));
+                      "~/Content/mapbox.css",
+                      "~/Content/leaflet.draw.css"));
         }
     }
 }

@@ -35,8 +35,7 @@
           <Parameter Name="startDateTime" Type="datetime" Mode="In" />
           <Parameter Name="endDateTime" Type="datetime" Mode="In" />
           <Parameter Name="distanceInMeters" Type="float" Mode="In" />
-          <Parameter Name="pointLatitude" Type="float" Mode="In" />
-          <Parameter Name="pointLongitude" Type="float" Mode="In" />
+          <Parameter Name="pointAsText" Type="text" Mode="In" />
         </Function>
         <EntityContainer Name="StagingModelStoreContainer">
           <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
@@ -74,16 +73,21 @@
             <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="polygonAsText" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="NearestPointQuery">
+          <FunctionImport Name="NearestPointQuery" ReturnType="Collection(StagingModel.NearestPointQuery_Result)">
             <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
-            <Parameter Name="pointLatitude" Mode="In" Type="Double" />
-            <Parameter Name="pointLongitude" Mode="In" Type="Double" />
+            <Parameter Name="pointAsText" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetPointsFromInsideRegion_Result">
           <Property Type="String" Name="Points_Inside" Nullable="true" />
+          <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="NearestPointQuery_Result">
+          <Property Type="Double" Name="DistanceFrom" Nullable="true" />
           <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
           <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
           <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
@@ -126,7 +130,16 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery" />
+          <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StagingModel.NearestPointQuery_Result">
+                <ScalarProperty Name="DistanceFrom" ColumnName="DistanceFrom" />
+                <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+                <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

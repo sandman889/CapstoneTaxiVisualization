@@ -137,6 +137,9 @@
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LatLong.cs" />
+    <Compile Include="NearestPointQuery_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaxiData.Context.cs">
       <AutoGen>True</AutoGen>
@@ -156,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\leaflet.css" />
+    <Content Include="Content\leaflet.draw.css" />
     <Content Include="Content\mapbox.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -172,6 +176,37 @@
     <Content Include="Scripts\jquery\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\map\d3.min.js" />
     <Content Include="Scripts\map\drawMap.js" />
+    <Content Include="Scripts\map\leaflet-draw\dist\images\spritesheet-2x.png" />
+    <Content Include="Scripts\map\leaflet-draw\dist\images\spritesheet.png" />
+    <Content Include="Scripts\map\leaflet-draw\dist\leaflet.draw-src.js" />
+    <Content Include="Scripts\map\leaflet-draw\dist\leaflet.draw.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\Control.Draw.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\copyright.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\DrawToolbar.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Circle.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Feature.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Marker.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Polygon.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Polyline.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.Rectangle.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\draw\handler\Draw.SimpleShape.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\EditToolbar.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\Edit.Circle.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\Edit.Marker.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\Edit.Poly.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\Edit.Rectangle.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\Edit.SimpleShape.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\EditToolbar.Delete.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\edit\handler\EditToolbar.Edit.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\ext\GeometryUtil.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\ext\LatLngUtil.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\ext\LineUtil.Intersect.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\ext\Polygon.Intersect.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\ext\Polyline.Intersect.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\images\spritesheet.svg" />
+    <Content Include="Scripts\map\leaflet-draw\src\Leaflet.draw.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\Toolbar.js" />
+    <Content Include="Scripts\map\leaflet-draw\src\Tooltip.js" />
     <Content Include="Scripts\map\leaflet.js" />
     <Content Include="Scripts\map\mapbox.js" />
     <Content Include="Scripts\_references.js" />

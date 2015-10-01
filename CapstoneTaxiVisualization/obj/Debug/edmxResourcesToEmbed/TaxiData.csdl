@@ -28,16 +28,21 @@
       <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
       <Parameter Name="polygonAsText" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="NearestPointQuery">
+    <FunctionImport Name="NearestPointQuery" ReturnType="Collection(StagingModel.NearestPointQuery_Result)">
       <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
       <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
       <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
-      <Parameter Name="pointLatitude" Mode="In" Type="Double" />
-      <Parameter Name="pointLongitude" Mode="In" Type="Double" />
+      <Parameter Name="pointAsText" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="GetPointsFromInsideRegion_Result">
     <Property Type="String" Name="Points_Inside" Nullable="true" />
+    <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="NearestPointQuery_Result">
+    <Property Type="Double" Name="DistanceFrom" Nullable="true" />
     <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
     <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
     <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
