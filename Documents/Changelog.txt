@@ -1,0 +1,24 @@
+CHANGELOG:
+  9.17.15 - A little progress on the leaflet side of things, significant progress on SQL database creation/queries, unable to make progress on 
+   		    server side code. Slow week. Not much else to report, still figuring things out
+
+  9.11.15 - File created, all memebers have project building and the data is being worked through by all, 
+            specified tasks are now created and this file will be used. 
+  Begin - The data was put into a SQL server, needs worked through, all members have the proper software installed
+            and we have an idea in mind of how to continue the project and the structure we need. General assignments
+            will be as follows
+            Brendan and Bill:
+              -Front end/client side development in javascript and html using various libraries to produce a pleasant
+                and useful user experience
+            Tom and Tyler:
+              -Back end/database/server side development to feed the data and manipulate it as necessary so that 
+                Brendan and Bill will have the data they need
+            Tyler:
+              -General project design and structure, big picture in mind, task assignments 
+            
+            Those assignments are tentative and all members will be expected to do work on all parts of the project
+             as needed by the changing requirements. 
+             
+            Application Structure:
+              Windows > IIS > SQL Server Database > ASP.NET MVC Web Application
+              'WISA' web stack

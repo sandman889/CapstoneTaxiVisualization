@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StagingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Identity_Smaller">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pickup_datetime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="dropoff_datetime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="passenger_count" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="trip_time_in_secs" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="trip_distance" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="pickup_longitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="pickup_latitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_longitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="dropoff_latitude" Type="Decimal" Precision="9" Scale="6" Nullable="false" />
+    <Property Name="fare_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="tip_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="tolls_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="total_amount" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="pickup_geolocation" Type="Geography" />
+    <Property Name="dropoff_geolocation" Type="Geography" />
+  </EntityType>
+  <EntityContainer Name="TaxiDataEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" />
+    <FunctionImport Name="GetPointsFromInsideRegion" ReturnType="Collection(StagingModel.GetPointsFromInsideRegion_Result)">
+      <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
+      <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
+      <Parameter Name="polygonAsText" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="NearestPointQuery" ReturnType="Collection(StagingModel.NearestPointQuery_Result)">
+      <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
+      <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
+      <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
+      <Parameter Name="pointAsText" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="GetPointsFromInsideRegion_Result">
+    <Property Type="String" Name="Points_Inside" Nullable="true" />
+    <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+  </ComplexType>
+  <ComplexType Name="NearestPointQuery_Result">
+    <Property Type="Double" Name="DistanceFrom" Nullable="true" />
+    <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+    <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+  </ComplexType>
+</Schema>

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="StagingModelStoreContainer" CdmEntityContainer="TaxiDataEntities">
+    <EntitySetMapping Name="Identity_Smaller">
+      <EntityTypeMapping TypeName="StagingModel.Identity_Smaller">
+        <MappingFragment StoreEntitySet="Identity_Smaller">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
+          <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+          <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+          <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+          <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+          <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+          <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+          <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+          <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+          <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
+          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+          <ScalarProperty Name="pickup_geolocation" ColumnName="pickup_geolocation" />
+          <ScalarProperty Name="dropoff_geolocation" ColumnName="dropoff_geolocation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="GetPointsFromInsideRegion" FunctionName="StagingModel.Store.GetPointsFromInsideRegion">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="StagingModel.GetPointsFromInsideRegion_Result">
+          <ScalarProperty Name="Points_Inside" ColumnName="Points Inside" />
+          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="StagingModel.NearestPointQuery_Result">
+          <ScalarProperty Name="DistanceFrom" ColumnName="DistanceFrom" />
+          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

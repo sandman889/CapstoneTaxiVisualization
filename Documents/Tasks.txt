@@ -1,0 +1,32 @@
+TASKS:
+
+Sprint 2: 9.18.15 - 10.01.15
+	Tyler: 
+		-Based on what the application needs, create the controller methods that will interface with EF to call the stored procedures to get the necessary data
+		-Finish building home server, install all necessary software, and configure it properly so the group may use it for the SQL database
+		 	and so it may house our master branch of code for access to present/host 
+		-Help group take all of their parts and integrate them into a prototype of the application, this involves teaching everyone about MVC
+			and how an MVC app is structured and the right way to do things
+		-Help out either Tom or Brendan/Bill as needed
+		-Set up and walk the team through setting up an Entity Framework connection within an MVC application to interface with the database
+			and show them how to remotely connect to a SQL server hosted on my server, for the data on their local machines 
+	Bill/Brendan:
+		-Form a design for the web page, doesn't have to be completely fleshed out, but it needs to be functional and moderately attractive
+		-Leaflet map will be on the page, you will be able to select at MINIMUM a box on the map to see data from
+		-Figure out what Leaflet returns when a box/polygon is selected, work with Tyler to build the interface with the server
+        -Plot points based on an array/JSON object of LatLongs
+    Tom:
+    	-continue working on the SQL database construction, get spatial indexing working properly
+    	-improve speed as much as possible
+    	-supply query to build database so that Tyler can build it on his server
+    	-build a range based query/bounding box that can be interfaced with 
+
+Sprint 1: 9.11.15 - 9.17.15
+  Tyler:
+    -Begin structuring the server side code to accept the data from the server and from the client side
+  Tom: 
+    -Finish the SQL query construction to create the table properly with the spatial indexes
+  Brendan:
+    -Learn how to create points on a map using d3.js and get them working in a test environment
+  Bill:
+    -Get a leaflet map on the page displaying properly and in the style we want, figure out what data it returns on a selection or if it does at all
