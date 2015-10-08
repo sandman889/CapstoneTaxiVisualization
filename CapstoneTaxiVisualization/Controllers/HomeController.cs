@@ -33,7 +33,7 @@ namespace CapstoneTaxiVisualization.Controllers
             LatLong point = new LatLong(40.757575, -73.999999);
 
             //test calls for stored procedure
-           /* threaded.Start();
+            threaded.Start();
             var exampleThread = GetPointsInPolygonRegionThreaded(points, new DateTime(2013, 11, 2), new DateTime(2013, 11, 7));
             threaded.Stop();
 
@@ -44,7 +44,7 @@ namespace CapstoneTaxiVisualization.Controllers
 
             var test = example == exampleThread;
             var threadTime = threaded.ElapsedMilliseconds;
-            var singleTime = nonThread.ElapsedMilliseconds;*/
+            var singleTime = nonThread.ElapsedMilliseconds;
             return View();
         }
 
@@ -115,6 +115,9 @@ namespace CapstoneTaxiVisualization.Controllers
             //obtain the centroid of the polygon to divide it properly
             LatLong centroid = Utilities.GetCentroid(boundPoints);
 
+            //divide up each side into two pieces 
+            boundPoints = DivideSections(boundPoints);
+
             //set up the list of stored procedure objects to run in the threads
             List<StoredProcedures> procThreads = new List<StoredProcedures>();
             for (int i = 0; i < boundPoints.Count() - 1; ++i)
@@ -143,6 +146,30 @@ namespace CapstoneTaxiVisualization.Controllers
             while (Utilities.jobCount != 0) { /*blocking*/}
 
             return Utilities.BuildJsonString(procThreads.Select(x => x.jsonResult).ToList());
+        }
+
+        public List<LatLong> DivideSections(List<LatLong> boundPoints)
+        {
+            List<LatLong> temp = new List<LatLong>();
+
+            for(int i = 0; i < boundPoints.Count() - 1; ++i)
+            {
+                temp.Add(boundPoints.ElementAt(i));
+
+                //figure out the inbetween lat and long
+                LatLong newPoint = new LatLong();
+                newPoint.Latitude = (boundPoints.ElementAt(i).Latitude + boundPoints.ElementAt(i + 1).Latitude) / 2;
+                newPoint.Longitude = (boundPoints.ElementAt(i).Longitude + boundPoints.ElementAt(i + 1).Longitude) / 2;
+
+                temp.Add(newPoint);
+
+                if (i == boundPoints.Count() - 2)
+                {
+                    temp.Add(boundPoints.ElementAt(i + 1));
+                }
+            }
+
+            return temp;
         }
     }
 

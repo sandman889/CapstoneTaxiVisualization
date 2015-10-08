@@ -138,7 +138,6 @@
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LatLong.cs" />
-    <Compile Include="Models\RegionQueryModel.cs" />
     <Compile Include="NearestPointQuery_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
@@ -182,6 +181,7 @@
     <Content Include="Scripts\map\leaflet-draw\dist\images\spritesheet.png" />
     <Content Include="Scripts\map\leaflet-draw\dist\leaflet.draw-src.js" />
     <Content Include="Scripts\map\leaflet-draw\dist\leaflet.draw.js" />
+    <Content Include="Scripts\map\leaflet-draw\leaflet.draw-src.js" />
     <Content Include="Scripts\map\leaflet-draw\src\Control.Draw.js" />
     <Content Include="Scripts\map\leaflet-draw\src\copyright.js" />
     <Content Include="Scripts\map\leaflet-draw\src\draw\DrawToolbar.js" />
