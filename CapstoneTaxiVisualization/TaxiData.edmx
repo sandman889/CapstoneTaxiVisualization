@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="StagingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="TaxiDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Identity_Smaller">
           <Key>
             <PropertyRef Name="ID" />
@@ -37,14 +37,14 @@
           <Parameter Name="distanceInMeters" Type="float" Mode="In" />
           <Parameter Name="pointAsText" Type="text" Mode="In" />
         </Function>
-        <EntityContainer Name="StagingModelStoreContainer">
+        <EntityContainer Name="TaxiDataModelStoreContainer">
           <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="StagingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="TaxiDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Identity_Smaller">
           <Key>
             <PropertyRef Name="ID" />
@@ -68,12 +68,12 @@
         </EntityType>
         <EntityContainer Name="TaxiDataEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" />
-          <FunctionImport Name="GetPointsFromInsideRegion" ReturnType="Collection(StagingModel.GetPointsFromInsideRegion_Result)">
+          <FunctionImport Name="GetPointsFromInsideRegion" ReturnType="Collection(TaxiDataModel.GetPointsFromInsideRegion_Result)">
             <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="polygonAsText" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="NearestPointQuery" ReturnType="Collection(StagingModel.NearestPointQuery_Result)">
+          <FunctionImport Name="NearestPointQuery" ReturnType="Collection(TaxiDataModel.NearestPointQuery_Result)">
             <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
@@ -97,9 +97,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="StagingModelStoreContainer" CdmEntityContainer="TaxiDataEntities">
+        <EntityContainerMapping StorageEntityContainer="TaxiDataModelStoreContainer" CdmEntityContainer="TaxiDataEntities">
           <EntitySetMapping Name="Identity_Smaller">
-            <EntityTypeMapping TypeName="StagingModel.Identity_Smaller">
+            <EntityTypeMapping TypeName="TaxiDataModel.Identity_Smaller">
               <MappingFragment StoreEntitySet="Identity_Smaller">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
@@ -120,9 +120,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="GetPointsFromInsideRegion" FunctionName="StagingModel.Store.GetPointsFromInsideRegion">
+          <FunctionImportMapping FunctionImportName="GetPointsFromInsideRegion" FunctionName="TaxiDataModel.Store.GetPointsFromInsideRegion">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="StagingModel.GetPointsFromInsideRegion_Result">
+              <ComplexTypeMapping TypeName="TaxiDataModel.GetPointsFromInsideRegion_Result">
                 <ScalarProperty Name="Points_Inside" ColumnName="Points Inside" />
                 <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
                 <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
@@ -130,9 +130,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery">
+          <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="TaxiDataModel.Store.NearestPointQuery">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="StagingModel.NearestPointQuery_Result">
+              <ComplexTypeMapping TypeName="TaxiDataModel.NearestPointQuery_Result">
                 <ScalarProperty Name="DistanceFrom" ColumnName="DistanceFrom" />
                 <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
                 <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />

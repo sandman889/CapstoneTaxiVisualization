@@ -19,6 +19,7 @@ namespace CapstoneTaxiVisualization
 
             bundles.Add(new ScriptBundle("~/bundles/visualization").Include(
                     "~/Scripts/map/d3.min.js",
+                    "~/Scripts/map/leaflet-src.js",
                     "~/Scripts/map/leaflet.js",
                     "~/Scripts/map/mapbox.js",
                     "~/Scripts/map/drawMap.js"

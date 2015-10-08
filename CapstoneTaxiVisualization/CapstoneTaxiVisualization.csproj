@@ -127,6 +127,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Utilities.cs" />
     <Compile Include="GetPointsFromInsideRegion_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
@@ -137,6 +138,7 @@
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LatLong.cs" />
+    <Compile Include="Models\RegionQueryModel.cs" />
     <Compile Include="NearestPointQuery_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
@@ -219,7 +221,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

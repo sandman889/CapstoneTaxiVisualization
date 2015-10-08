@@ -1,16 +1,9 @@
 ﻿@{
     ViewBag.Title = "Taxi Cab Service";
 }
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/visualization")
-@Scripts.Render("~/bundles/leaflet-draw")
-
 
 <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
 <button id="changeColor">Rectangle -> Blue</button>
-
-
-
 
 <script>
     var osmUrl = 'https://{s}.tiles.mapbox.com/v3/examples.map-zr0njcqy/{z}/{x}/{y}.png',

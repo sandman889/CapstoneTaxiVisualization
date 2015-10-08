@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Threading;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using Microsoft.SqlServer.Types;
 using CapstoneTaxiVisualization.Models;
 using System.Diagnostics;
 using System.Globalization;
+using System.Web.Configuration;
 
 namespace CapstoneTaxiVisualization.Controllers
 {
@@ -15,6 +17,8 @@ namespace CapstoneTaxiVisualization.Controllers
     {
         public ActionResult Index()
         {
+            Stopwatch threaded = new Stopwatch();
+            Stopwatch nonThread = new Stopwatch();
             //POLYGON((-73.993 40.75, -73.993 40.752, -73.995 40.752, -73.995 40.75, -73.993 40.75))
             List<LatLong> points = new List<LatLong>();
 
@@ -29,10 +33,53 @@ namespace CapstoneTaxiVisualization.Controllers
             LatLong point = new LatLong(40.757575, -73.999999);
 
             //test calls for stored procedure
-            //var example = GetPointsInPolygonRegion(new DateTime(2013, 11, 2), new DateTime(2013, 11, 9), points);
-           // var example2 = GetNearestNeighbor(new DateTime(2013, 11, 2), new DateTime(2013, 11, 9), point);
+           /* threaded.Start();
+            var exampleThread = GetPointsInPolygonRegionThreaded(points, new DateTime(2013, 11, 2), new DateTime(2013, 11, 7));
+            threaded.Stop();
 
+            nonThread.Start();
+            var example = GetPointsInPolygonRegion(new DateTime(2013, 11, 2), new DateTime(2013, 11, 7), points);
+            nonThread.Stop();
+            //var example2 = GetNearestNeighbor(new DateTime(2013, 11, 2), new DateTime(2013, 11, 9), point);
+
+            var test = example == exampleThread;
+            var threadTime = threaded.ElapsedMilliseconds;
+            var singleTime = nonThread.ElapsedMilliseconds;*/
             return View();
+        }
+
+        public string GetPointsInPolygonRegion(DateTime startDate, DateTime endDate, List<LatLong> boundPoints)
+        {
+            using (TaxiDataEntities context = new TaxiDataEntities())
+            {
+                var geoPoly = new SqlGeographyBuilder();
+
+                //set the SRID and chose the sql geography datatype
+                geoPoly.SetSrid(4326);
+                geoPoly.BeginGeography(OpenGisGeographyType.Polygon);
+
+                //set the initial point to skip, and use that to begin the figure
+                var initialPoint = boundPoints.First();
+                geoPoly.BeginFigure(initialPoint.Latitude, initialPoint.Longitude);
+
+                foreach (var point in boundPoints)
+                {
+                    if (point != initialPoint)
+                    {
+                        //add each point to the geography poly
+                        geoPoly.AddLine(point.Latitude, point.Longitude);
+                    }
+                }
+
+                //end the configuration of the geography
+                geoPoly.EndFigure();
+                geoPoly.EndGeography();
+
+                //the final SQL polygon element
+                SqlGeography sqlPoly = geoPoly.ConstructedGeography;
+
+                return JsonConvert.SerializeObject(context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()));
+            }
         }
 
         [HttpGet]
@@ -63,21 +110,54 @@ namespace CapstoneTaxiVisualization.Controllers
         }
 
         [HttpPost]
-        public Object GetPointsInPolygonRegion(string startDateString, string endDateString, List<LatLong> boundPoints)
+        public string GetPointsInPolygonRegionThreaded(List<LatLong> boundPoints, DateTime startDate, DateTime endDate)
         {
+            //obtain the centroid of the polygon to divide it properly
+            LatLong centroid = Utilities.GetCentroid(boundPoints);
+
+            //set up the list of stored procedure objects to run in the threads
+            List<StoredProcedures> procThreads = new List<StoredProcedures>();
+            for (int i = 0; i < boundPoints.Count() - 1; ++i)
+            {
+                var temp = new StoredProcedures();
+                temp.boundPoints.AddRange(new LatLong[] {new LatLong(centroid.Latitude, centroid.Longitude), 
+                                                         new LatLong(boundPoints.ElementAt(i).Latitude, boundPoints.ElementAt(i).Longitude),
+                                                         new LatLong(boundPoints.ElementAt(i + 1).Latitude, boundPoints.ElementAt(i + 1).Longitude),
+                                                         new LatLong(centroid.Latitude, centroid.Longitude)
+                                                        });
+                temp.startDate = startDate;
+                temp.endDate = endDate;
+
+                procThreads.Add(temp);
+            }
+
+            //queue up all of the threads to run
+            foreach (var proc in procThreads)
+            {
+                ThreadPool.QueueUserWorkItem(proc.GetPointsInPolygonRegion);
+            }
+            
+            //block the main thread until the jobs have started
+            while (Utilities.jobCount == 0) { /*blocking*/ }
+            //now block until the jobs have finished
+            while (Utilities.jobCount != 0) { /*blocking*/}
+
+            return Utilities.BuildJsonString(procThreads.Select(x => x.jsonResult).ToList());
+        }
+    }
+
+    public class StoredProcedures
+    {
+        public DateTime startDate;
+        public DateTime endDate;
+        public List<LatLong> boundPoints = new List<LatLong>();
+        public string jsonResult = String.Empty;
+
+        public void GetPointsInPolygonRegion(Object state)
+        {
+            Interlocked.Increment(ref Utilities.jobCount);
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
-                /*DateTime? startDate = DateTime.ParseExact(startDateString.Substring(0, 24),
-                                                    "ddd MMM d yyyy HH:mm:ss",
-                                                    CultureInfo.InvariantCulture);
-
-                DateTime? endDate = DateTime.ParseExact(endDateString.Substring(0, 24),
-                                                    "ddd MMM d yyyy HH:mm:ss",
-                                                    CultureInfo.InvariantCulture);*/
-
-                DateTime? startDate = new DateTime(2013, 11, 02);
-                DateTime? endDate = new DateTime(2013, 11, 03);
-
                 var geoPoly = new SqlGeographyBuilder();
 
                 //set the SRID and chose the sql geography datatype
@@ -104,8 +184,9 @@ namespace CapstoneTaxiVisualization.Controllers
                 //the final SQL polygon element
                 SqlGeography sqlPoly = geoPoly.ConstructedGeography;
 
-                return context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString());
+                jsonResult = JsonConvert.SerializeObject(context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()));
             }
+            Interlocked.Decrement(ref Utilities.jobCount);
         }
     }
 }
