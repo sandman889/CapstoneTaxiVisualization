@@ -2,117 +2,126 @@
     ViewBag.Title = "Taxi Cab Service";
 }
 
-<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
-<button id="changeColor">Rectangle -> Blue</button>
+<div class="interface-container">
+    <div id="date-select-container" style="margin-top: 2em; margin-left: 2em; font-size: 1.25em;padding-left: 1em; padding-right: 1em;">
+        <strong style="font-size: 1.25em">Taxi Trip Data</strong><br/><br/>
+        <label for="startDate">Start Date:</label><br/>
+        <input type="text" id="startDate" style="width: 80%;"/>
+        <br />
+         <br/>
+        <label for="endDate">End Date:</label><br/>
+        <input type="text" id="endDate" style="width: 80%;"/><br/><br/>
+
+        <!--<button class="k-button">Clear Layers</button><br/><br/>
+        <button class="k-button">Clear Points</button>-->
+        <!--<form>
+            <input id="pickupSelect" type="radio" />Pickups
+            <input id="dropoffSelect" type="radio" />Dropoffs
+        </form>-->
+
+        <br/><br/><strong style="font-size: 1.25em">To use application:</strong><br/>
+
+        <ul>
+            <li>Select the date range you would like above</li>
+            <!--<li>Select if you would like to see pickups or dropoffs</li>-->
+            <li>Select the shape you would like from the menu to the right of the map</li>
+            <li>Draw your shape!</li>
+        </ul>
+
+        <p>That is it! All of the pickups or dropoffs from that time period will be displayed on the map!</p>
+    </div>
+</div>
+
+<div class="map-container">
+    <div id="map" style="height: 100%; width: 100%; border: 1px solid #ccc"></div>
+</div>
 
 <script>
-    var osmUrl = 'https://{s}.tiles.mapbox.com/v3/examples.map-zr0njcqy/{z}/{x}/{y}.png',
-        osmAttrib = '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>',
-        osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
-        map = new L.Map('map', { layers: [osm], center: new L.LatLng(40.72332345541449, -73.99), zoom: 15 });
-
-    var drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
-
-    // Set the title to show on the polygon button
-    L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a sexy polygon!';
-
-    var drawControl = new L.Control.Draw({
-        position: 'topright',
-        draw: {
-            polyline: {
-                metric: true
-            },
-            polygon: {
-                allowIntersection: false,
-                showArea: true,
-                drawError: {
-                    color: '#b00b00',
-                    timeout: 1000
-                },
-                shapeOptions: {
-                    color: '#bada55'
-                }
-            },
-            circle: {
-                shapeOptions: {
-                    color: '#662d91'
-                }
-            },
-            marker: false
-        },
-        edit: {
-            featureGroup: drawnItems,
-            remove: false
-        }
-    });
-    map.addControl(drawControl);
-
-    map.on('draw:created', function (e) {
-        var type = e.layerType,
-            layer = e.layer;
-
-        if (type === 'marker') {
-            layer.bindPopup('A popup!');
-        }
-
-        if (type === 'rectangle') {
-            layer.on('mouseover', function () {
-                //	alert(layer.getLatLngs());
-
-                //	var points = layer.getLatLngs();
-
-                var points = layer.toGeoJSON();
-                var test = "";
-
-            });
-
-        }
-
-
-
-        drawnItems.addLayer(layer);
-    });
-
-    map.on('draw:edited', function (e) {
-        var layers = e.layers;
-        var countOfEditedLayers = 0;
-        layers.eachLayer(function (layer) {
-            countOfEditedLayers++;
+    $(document).ready(function () {
+        // set up the kendo UI datepickers with the date range of the data
+        $("#startDate").kendoDateTimePicker({
+            min: new Date(2013, 10, 1),
+            max: new Date(2013, 10, 30),
+            value: new Date(2013, 10, 1, 9, 30, 00)
         });
-        console.log("Edited " + countOfEditedLayers + " layers");
+
+        $("#endDate").kendoDateTimePicker({
+            min: new Date(2013, 10, 1, 00, 00, 00),
+            max: new Date(2013, 10, 30, 59, 59, 59),
+            value: new Date(2013, 10, 1, 9, 45, 00)
+        });
+
+        //build the map element
+        L.mapbox.accessToken = 'pk.eyJ1Ijoic2FuZG1hbjg4OSIsImEiOiJjaWV1aXd0bmYwaTRscjhtMGc5Y2NqMnB2In0.tpP5eJMyyGr-haIjRUq1jQ';
+        var osmUrl = 'https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken,
+            osmAttrib = '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>',
+            osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
+            map = new L.Map('map', { layers: [osm], center: new L.LatLng(40.72332345541449, -73.99), zoom: 15 });
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            position: 'topright',
+            draw: {
+                polyline: {
+                    metric: true
+                },
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    drawError: {
+                        color: '#b00b00',
+                        timeout: 1000
+                    },
+                    shapeOptions: {
+                        color: '#bada55'
+                    }
+                },
+                circle: {
+                    shapeOptions: {
+                        color: '#662d91'
+                    }
+                },
+                marker: false
+            },
+            edit: {
+                featureGroup: drawnItems,
+                remove: false
+            }
+        });
+        map.addControl(drawControl);
+
+        //on draw create, format the points correctly and query the server for the points in that time
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('A popup!');
+            }
+
+            var geoJson = layer.toGeoJSON()
+
+            var correctedPoints = BuildFormattedLatLong(geoJson);
+            
+            RegionQueryDisplay(correctedPoints, map);
+
+            drawnItems.addLayer(layer);
+        });
     });
 
-    L.DomUtil.get('changeColor').onclick = function () {
-        drawControl.setDrawingOptions({ rectangle: { shapeOptions: { color: '#004a80' } } });
-    };
-
-</script>
-
-<button id="test">Test Here!</button>
-<script type="text/javascript">
-    function TestConnection() {
-        //test that the method can be called
-        var listOfPoints = [
-            {"Latitude": 40.75, "Longitude": -73.993 },
-            {"Latitude": 40.752, "Longitude": -73.993 },
-            {"Latitude": 40.752, "Longitude": -73.995 },
-            {"Latitude": 40.75, "Longitude": -73.995 },
-            {"Latitude": 40.75, "Longitude": -73.993 }
-        ];
-        var startDateArg = new Date(2013, 10, 02);
-        var endDateArg = new Date(213, 10, 09);
-
+    function RegionQueryDisplay(data, map) {
         $.ajax({
             type: "POST",
             url: "RegionQuery",
             data: {
-                startDateString: startDateArg.toString(),
-                endDateString: endDateArg.toString(),
-                boundPoints: listOfPoints
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                boundPoints: data
             },
             success: function (response) {
-                window.alert(response);
+                drawCircles(JSON.parse(response), map);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 window.alert(xhr.responseText)
@@ -120,7 +129,55 @@
         });
     }
 
-    $("#test").click(function () {
-        TestConnection();
-    });
+    //switch the latitudes and longitudes so they will be correct for the
+    //server function and then reverse them to follow left hand rule
+    function BuildFormattedLatLong(data) {
+        var returnVal = [];
+
+        var rewound = geojsonRewind(data, true);
+
+        rewound.geometry.coordinates[0].forEach(function (instance) {
+            returnVal.push({ "Latitude": instance[1], "Longitude": instance[0] });
+        });
+
+       /* for (var i = 0; i < data.length; ++i) {
+            returnVal.push({ "Latitude": data[(data.length - 1) - i][1], "Longitude": data[(data.length - 1) - i][0] });
+        }*/
+
+        return returnVal;
+    }
+
+    function drawCircles(data, map) {
+        /* Initialize the SVG layer */
+        map._initPathRoot();
+        /* We simply pick up the SVG from the map object */
+        var svg = d3.select("#map").select("svg"),
+        g = svg.append("g");
+
+            /* Add a LatLng object to each item in the dataset */
+            data.forEach(function (d) {
+                d.LatLng = new L.LatLng(d.Latitude,
+                                        d.Longitude)
+            })
+
+            var feature = g.selectAll("circle")
+                .data(data)
+                .enter().append("circle")
+                .style("stroke", "black")
+                .style("opacity", .6)
+                .style("fill", "red")
+                .attr("r", 5);
+
+            map.on("viewreset", update);
+            update();
+            function update() {
+                feature.attr("transform",
+                function (d) {
+                    return "translate(" +
+                        map.latLngToLayerPoint(d.LatLng).x + "," +
+                        map.latLngToLayerPoint(d.LatLng).y + ")";
+                }
+                )
+            }
+    }
 </script>

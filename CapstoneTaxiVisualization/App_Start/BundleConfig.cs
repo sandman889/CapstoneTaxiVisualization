@@ -9,7 +9,8 @@ namespace CapstoneTaxiVisualization
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery/jquery-{version}.js"));
+                        "~/Scripts/jquery/jquery-{version}.js",
+                        "~/Scripts/jquery-ui-1.11.4.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery/jquery.validate*"));
@@ -39,7 +40,8 @@ namespace CapstoneTaxiVisualization
                       "~/Content/site.css",
                       "~/Content/leaflet.css",
                       "~/Content/mapbox.css",
-                      "~/Content/leaflet.draw.css"));
+                      "~/Content/leaflet.draw.css",
+                      "~/Content/themes/base/all.css"));
         }
     }
 }

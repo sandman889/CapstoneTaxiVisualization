@@ -10,6 +10,7 @@ using CapstoneTaxiVisualization.Models;
 using System.Diagnostics;
 using System.Globalization;
 using System.Web.Configuration;
+using CapstoneTaxiVisualization.Classes;
 
 namespace CapstoneTaxiVisualization.Controllers
 {
@@ -17,41 +18,15 @@ namespace CapstoneTaxiVisualization.Controllers
     {
         public ActionResult Index()
         {
-            Stopwatch threaded = new Stopwatch();
-            Stopwatch nonThread = new Stopwatch();
-            //POLYGON((-73.993 40.75, -73.993 40.752, -73.995 40.752, -73.995 40.75, -73.993 40.75))
-            List<LatLong> points = new List<LatLong>();
-
-            points.AddRange(new LatLong[] {
-                new LatLong(40.75, -73.993), 
-                new LatLong(40.752, -73.993), 
-                new LatLong(40.752, -73.995), 
-                new LatLong(40.75, -73.995),
-                new LatLong(40.75, -73.993)
-            });
-
-            LatLong point = new LatLong(40.757575, -73.999999);
-
-            //test calls for stored procedure
-            threaded.Start();
-            var exampleThread = GetPointsInPolygonRegionThreaded(points, new DateTime(2013, 11, 2), new DateTime(2013, 11, 7));
-            threaded.Stop();
-
-            nonThread.Start();
-            var example = GetPointsInPolygonRegion(new DateTime(2013, 11, 2), new DateTime(2013, 11, 7), points);
-            nonThread.Stop();
-            //var example2 = GetNearestNeighbor(new DateTime(2013, 11, 2), new DateTime(2013, 11, 9), point);
-
-            var test = example == exampleThread;
-            var threadTime = threaded.ElapsedMilliseconds;
-            var singleTime = nonThread.ElapsedMilliseconds;
             return View();
         }
 
+        [HttpPost]
         public string GetPointsInPolygonRegion(DateTime startDate, DateTime endDate, List<LatLong> boundPoints)
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
+                //divide the polygon in half
                 var geoPoly = new SqlGeographyBuilder();
 
                 //set the SRID and chose the sql geography datatype
@@ -78,7 +53,9 @@ namespace CapstoneTaxiVisualization.Controllers
                 //the final SQL polygon element
                 SqlGeography sqlPoly = geoPoly.ConstructedGeography;
 
-                return JsonConvert.SerializeObject(context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()));
+                var returnVal = context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()).Select(x => new LatLong(Convert.ToDouble(x.pickup_latitude), Convert.ToDouble(x.pickup_longitude))).ToList();
+
+                return JsonConvert.SerializeObject(returnVal);
             }
         }
 
@@ -107,113 +84,6 @@ namespace CapstoneTaxiVisualization.Controllers
 
                 return JsonConvert.SerializeObject(context.NearestPointQuery(startDate, endDate, 50, sqlPoint.ToString()));
             }
-        }
-
-        [HttpPost]
-        public string GetPointsInPolygonRegionThreaded(List<LatLong> boundPoints, DateTime startDate, DateTime endDate)
-        {
-            //obtain the centroid of the polygon to divide it properly
-            LatLong centroid = Utilities.GetCentroid(boundPoints);
-
-            //divide up each side into two pieces 
-            boundPoints = DivideSections(boundPoints);
-
-            //set up the list of stored procedure objects to run in the threads
-            List<StoredProcedures> procThreads = new List<StoredProcedures>();
-            for (int i = 0; i < boundPoints.Count() - 1; ++i)
-            {
-                var temp = new StoredProcedures();
-                temp.boundPoints.AddRange(new LatLong[] {new LatLong(centroid.Latitude, centroid.Longitude), 
-                                                         new LatLong(boundPoints.ElementAt(i).Latitude, boundPoints.ElementAt(i).Longitude),
-                                                         new LatLong(boundPoints.ElementAt(i + 1).Latitude, boundPoints.ElementAt(i + 1).Longitude),
-                                                         new LatLong(centroid.Latitude, centroid.Longitude)
-                                                        });
-                temp.startDate = startDate;
-                temp.endDate = endDate;
-
-                procThreads.Add(temp);
-            }
-
-            //queue up all of the threads to run
-            foreach (var proc in procThreads)
-            {
-                ThreadPool.QueueUserWorkItem(proc.GetPointsInPolygonRegion);
-            }
-            
-            //block the main thread until the jobs have started
-            while (Utilities.jobCount == 0) { /*blocking*/ }
-            //now block until the jobs have finished
-            while (Utilities.jobCount != 0) { /*blocking*/}
-
-            return Utilities.BuildJsonString(procThreads.Select(x => x.jsonResult).ToList());
-        }
-
-        public List<LatLong> DivideSections(List<LatLong> boundPoints)
-        {
-            List<LatLong> temp = new List<LatLong>();
-
-            for(int i = 0; i < boundPoints.Count() - 1; ++i)
-            {
-                temp.Add(boundPoints.ElementAt(i));
-
-                //figure out the inbetween lat and long
-                LatLong newPoint = new LatLong();
-                newPoint.Latitude = (boundPoints.ElementAt(i).Latitude + boundPoints.ElementAt(i + 1).Latitude) / 2;
-                newPoint.Longitude = (boundPoints.ElementAt(i).Longitude + boundPoints.ElementAt(i + 1).Longitude) / 2;
-
-                temp.Add(newPoint);
-
-                if (i == boundPoints.Count() - 2)
-                {
-                    temp.Add(boundPoints.ElementAt(i + 1));
-                }
-            }
-
-            return temp;
-        }
-    }
-
-    public class StoredProcedures
-    {
-        public DateTime startDate;
-        public DateTime endDate;
-        public List<LatLong> boundPoints = new List<LatLong>();
-        public string jsonResult = String.Empty;
-
-        public void GetPointsInPolygonRegion(Object state)
-        {
-            Interlocked.Increment(ref Utilities.jobCount);
-            using (TaxiDataEntities context = new TaxiDataEntities())
-            {
-                var geoPoly = new SqlGeographyBuilder();
-
-                //set the SRID and chose the sql geography datatype
-                geoPoly.SetSrid(4326);
-                geoPoly.BeginGeography(OpenGisGeographyType.Polygon);
-
-                //set the initial point to skip, and use that to begin the figure
-                var initialPoint = boundPoints.First();
-                geoPoly.BeginFigure(initialPoint.Latitude, initialPoint.Longitude);
-
-                foreach (var point in boundPoints)
-                {
-                    if (point != initialPoint)
-                    {
-                        //add each point to the geography poly
-                        geoPoly.AddLine(point.Latitude, point.Longitude);
-                    }
-                }
-
-                //end the configuration of the geography
-                geoPoly.EndFigure();
-                geoPoly.EndGeography();
-
-                //the final SQL polygon element
-                SqlGeography sqlPoly = geoPoly.ConstructedGeography;
-
-                jsonResult = JsonConvert.SerializeObject(context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()));
-            }
-            Interlocked.Decrement(ref Utilities.jobCount);
-        }
+        }        
     }
 }

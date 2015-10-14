@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Threading;
 using CapstoneTaxiVisualization.Models;
 using Microsoft.SqlServer.Types;
+using System.Web.Configuration;
+using CapstoneTaxiVisualization.Classes;
 
 namespace CapstoneTaxiVisualization.Controllers
 {
@@ -11,43 +14,36 @@ namespace CapstoneTaxiVisualization.Controllers
     {
         public static int jobCount = 0;
 
-        /// <summary>
-        /// Gets the Centroid of the polygon given by the boundPoints
-        /// </summary>
-        /// <param name="boundPoints">List of Latitudes and Longitudes that represent the polygon</param>
-        /// <returns>LatLong object representing the centroid of the polygon</returns>
-        public static LatLong GetCentroid(List<LatLong> boundPoints)
+        #region Public Methods
+        public static string SerializeJsonThread(IEnumerable<object> data)
         {
-            var geoPoly = new SqlGeographyBuilder();
+            List<SerializeThread> procThread = new List<SerializeThread>();
 
-            geoPoly.SetSrid(4326);
-            geoPoly.BeginGeography(OpenGisGeographyType.Polygon);
-
-            //set the initial point to skip, and use that to begin the figure
-            var initialPoint = boundPoints.First();
-            geoPoly.BeginFigure(initialPoint.Latitude, initialPoint.Longitude);
-
-            foreach (var point in boundPoints)
+            //divide the enumerable object into chunks
+            foreach (var chunk in data.TakeChunks(Convert.ToInt32(WebConfigurationManager.AppSettings["ThreadPoolSize"])))
             {
-                if (point != initialPoint)
-                {
-                    //add each point to the geography poly
-                    geoPoly.AddLine(point.Latitude, point.Longitude);
-                }
+                SerializeThread temp = new SerializeThread();
+                temp.dataToSerialize = chunk;
+
+                procThread.Add(temp);
             }
 
-            //end the configuration of the geography
-            geoPoly.EndFigure();
-            geoPoly.EndGeography();
+            foreach (var proc in procThread)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(proc.SerializeObject));
+            }
 
-            //the final SQL polygon element
-            SqlGeography sqlPoly = geoPoly.ConstructedGeography;
-            var center = sqlPoly.MakeValid().EnvelopeCenter();
-    
-            return new LatLong(center.Lat.Value, center.Long.Value);
+            //block until the threads are initialized
+            while (jobCount == 0) { /*blocking*/ }
+            //block until the threads have finished
+            while (jobCount != 0) { /*blocking*/ }
+
+            return BuildJsonString(procThread.Select(x => x.jsonResult).ToList());
         }
+        #endregion
 
-        public static string BuildJsonString(List<string> json)
+        #region Private Methods
+        private static string BuildJsonString(List<string> json)
         {
             string jsonToReturn = String.Empty;
             List<string> cleanedJson = new List<string>();
@@ -74,5 +70,6 @@ namespace CapstoneTaxiVisualization.Controllers
 
             return jsonToReturn;
         }
+        #endregion
     }
 }
