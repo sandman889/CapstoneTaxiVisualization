@@ -114,7 +114,7 @@
     function RegionQueryDisplay(data, map) {
         $.ajax({
             type: "POST",
-            url: "RegionQuery",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/RegionQuery",
             data: {
                 startDate: $("#startDate").val(),
                 endDate: $("#endDate").val(),
