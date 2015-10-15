@@ -53,7 +53,7 @@ namespace CapstoneTaxiVisualization.Controllers
                 //the final SQL polygon element
                 SqlGeography sqlPoly = geoPoly.ConstructedGeography;
 
-                var returnVal = context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()).Select(x => new LatLong(Convert.ToDouble(x.pickup_latitude), Convert.ToDouble(x.pickup_longitude))).ToList();
+                var returnVal = context.GetPointsFromInsideRegion(startDate, endDate, sqlPoly.ToString()).Select(x => new LatLong(Convert.ToDouble(x.pickup_latitude), Convert.ToDouble(x.pickup_longitude)));
 
                 return JsonConvert.SerializeObject(returnVal);
             }
