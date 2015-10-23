@@ -121,6 +121,7 @@
                 boundPoints: data
             },
             success: function (response) {
+                //window.alert(JSON.parse(response).length);
                 drawCircles(JSON.parse(response), map);
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -156,8 +157,8 @@
 
             /* Add a LatLng object to each item in the dataset */
             data.forEach(function (d) {
-                d.LatLng = new L.LatLng(d.Latitude,
-                                        d.Longitude)
+                d.LatLng = new L.LatLng(d.Pickup.Latitude,
+                                        d.Pickup.Longitude)
             })
 
             var feature = g.selectAll("circle")

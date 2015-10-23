@@ -126,7 +126,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Classes\IEnumerableExtensions.cs" />
+    <Compile Include="Classes\Extensions.cs" />
+    <Compile Include="Classes\PagedList.cs" />
     <Compile Include="Classes\SerializeThread.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Utilities.cs" />
@@ -140,6 +141,7 @@
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LatLong.cs" />
+    <Compile Include="Models\QueryDto.cs" />
     <Compile Include="NearestPointQuery_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
