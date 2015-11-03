@@ -1,11 +1,14 @@
-﻿.interface-container {
-    background-color: lightgrey;
-    height: 98vh;
-    width: 25vw;
-    float: left;
+﻿html, body {
+    height: 100%;
+    overflow: hidden;
 }
+
 .map-container {
-    height: 98vh;
-    width: 73vw;
-    float: right;
+    height: 100%; 
+    width: 100%; 
+    border: 1px solid #ccc;
+}
+
+.full-height {
+    height: 100%;
 }

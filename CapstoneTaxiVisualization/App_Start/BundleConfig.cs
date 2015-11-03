@@ -9,21 +9,23 @@ namespace CapstoneTaxiVisualization
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery/jquery-{version}.js",
-                        "~/Scripts/jquery-ui-1.11.4.min.js"));
+                        "~/Scripts/jquery/jquery-{version}.js"
+            ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery/jquery.validate*"));
-
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap/bootstrap.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/visualization").Include(
                     "~/Scripts/map/d3.min.js",
                     "~/Scripts/map/leaflet-src.js",
                     "~/Scripts/map/leaflet.js",
                     "~/Scripts/map/mapbox.js",
-                    "~/Scripts/map/drawMap.js"
+                    "~/Scripts/map/drawMap.js",
+                    "~/Scripts/map/geojson-rewind.js",
+                    "~/Scripts/TaxiVizUtil.js",
+                    "~/Scripts/InterfaceInitialization.js",
+                    "~/Scripts/kendo.all.min.js",
+                    "~/Scripts/map/NewYorkBoroughs.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/leaflet-draw")
@@ -41,7 +43,15 @@ namespace CapstoneTaxiVisualization
                       "~/Content/leaflet.css",
                       "~/Content/mapbox.css",
                       "~/Content/leaflet.draw.css",
-                      "~/Content/themes/base/all.css"));
+                      "~/Content/themes/base/all.css",
+                      "~/Content/pure-min.css"
+                      ));
+
+            bundles.Add(new StyleBundle("~/Content/kendocss").Include(
+                "~/Content/kendo/kendo.common.min.css",              
+                "~/Content/kendo/kendo.metroblack.min.css",
+                "~/Content/kendo/kendo.metroblack.mobile.min.css"
+                ));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace CapstoneTaxiVisualization
     
         public virtual DbSet<Identity_Smaller> Identity_Smaller { get; set; }
     
-        public virtual ObjectResult<GetPointsFromInsideRegion_Result> GetPointsFromInsideRegion(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string polygonAsText)
+        public virtual ObjectResult<RegionQueryPoly_Result> RegionQueryPoly(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string polygonAsText, Nullable<int> pickDropBoth)
         {
             var startDateTimeParameter = startDateTime.HasValue ?
                 new ObjectParameter("startDateTime", startDateTime) :
@@ -43,28 +43,11 @@ namespace CapstoneTaxiVisualization
                 new ObjectParameter("polygonAsText", polygonAsText) :
                 new ObjectParameter("polygonAsText", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetPointsFromInsideRegion_Result>("GetPointsFromInsideRegion", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter);
-        }
+            var pickDropBothParameter = pickDropBoth.HasValue ?
+                new ObjectParameter("pickDropBoth", pickDropBoth) :
+                new ObjectParameter("pickDropBoth", typeof(int));
     
-        public virtual ObjectResult<NearestPointQuery_Result> NearestPointQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string pointAsText)
-        {
-            var startDateTimeParameter = startDateTime.HasValue ?
-                new ObjectParameter("startDateTime", startDateTime) :
-                new ObjectParameter("startDateTime", typeof(System.DateTime));
-    
-            var endDateTimeParameter = endDateTime.HasValue ?
-                new ObjectParameter("endDateTime", endDateTime) :
-                new ObjectParameter("endDateTime", typeof(System.DateTime));
-    
-            var distanceInMetersParameter = distanceInMeters.HasValue ?
-                new ObjectParameter("distanceInMeters", distanceInMeters) :
-                new ObjectParameter("distanceInMeters", typeof(double));
-    
-            var pointAsTextParameter = pointAsText != null ?
-                new ObjectParameter("pointAsText", pointAsText) :
-                new ObjectParameter("pointAsText", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NearestPointQuery_Result>("NearestPointQuery", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, pointAsTextParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RegionQueryPoly_Result>("RegionQueryPoly", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter, pickDropBothParameter);
         }
     }
 }

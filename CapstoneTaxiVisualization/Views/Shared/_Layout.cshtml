@@ -5,32 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/kendocss")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/visualization")
     @Scripts.Render("~/bundles/leaflet-draw")
-    
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="~/Scripts/map/geojson-rewind.js"></script>
 
     <link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
     <link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js"></script>
 
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.common.min.css">
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.rtl.min.css">
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.metro.min.css">
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.dataviz.min.css">
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.dataviz.default.min.css">
-    <link rel="stylesheet" href="http://cdn.kendostatic.com/2014.2.716/styles/kendo.mobile.all.min.css">
-
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://cdn.kendostatic.com/2014.2.716/js/kendo.all.min.js"></script>
-
 </head>
 <body>
-    <div class="container body-content" style="width: 100%; height: 100%;">
+    <div class="container body-content full-height">
         @RenderBody()
     </div>
-
 </body>
 </html>

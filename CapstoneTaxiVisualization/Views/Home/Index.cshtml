@@ -2,183 +2,24 @@
     ViewBag.Title = "Taxi Cab Service";
 }
 
-<div class="interface-container">
-    <div id="date-select-container" style="margin-top: 2em; margin-left: 2em; font-size: 1.25em;padding-left: 1em; padding-right: 1em;">
-        <strong style="font-size: 1.25em">Taxi Trip Data</strong><br/><br/>
-        <label for="startDate">Start Date:</label><br/>
-        <input type="text" id="startDate" style="width: 80%;"/>
-        <br />
-         <br/>
-        <label for="endDate">End Date:</label><br/>
-        <input type="text" id="endDate" style="width: 80%;"/><br/><br/>
+<div class="pure-g full-height">
+    <div class="pure-u-1-1 full-height">
+        <div class="k-content-wide">
+            <div id="toolbar"></div>
+        </div>
 
-        <!--<button class="k-button">Clear Layers</button><br/><br/>
-        <button class="k-button">Clear Points</button>-->
-        <!--<form>
-            <input id="pickupSelect" type="radio" />Pickups
-            <input id="dropoffSelect" type="radio" />Dropoffs
-        </form>-->
-
-        <br/><br/><strong style="font-size: 1.25em">To use application:</strong><br/>
-
-        <ul>
-            <li>Select the date range you would like above</li>
-            <!--<li>Select if you would like to see pickups or dropoffs</li>-->
-            <li>Select the shape you would like from the menu to the right of the map</li>
-            <li>Draw your shape!</li>
-        </ul>
-
-        <p>That is it! All of the pickups or dropoffs from that time period will be displayed on the map!</p>
+        <div style="height: 95%">
+            <div id="map" class="map-container"></div>
+        </div>
     </div>
-</div>
 
-<div class="map-container">
-    <div id="map" style="height: 100%; width: 100%; border: 1px solid #ccc"></div>
 </div>
+<div id="popup"></div>
+<div id="quickInfo"></div>
 
 <script>
     $(document).ready(function () {
-        // set up the kendo UI datepickers with the date range of the data
-        $("#startDate").kendoDateTimePicker({
-            min: new Date(2013, 10, 1),
-            max: new Date(2013, 10, 30),
-            value: new Date(2013, 10, 1, 9, 30, 00)
-        });
-
-        $("#endDate").kendoDateTimePicker({
-            min: new Date(2013, 10, 1, 00, 00, 00),
-            max: new Date(2013, 10, 30, 59, 59, 59),
-            value: new Date(2013, 10, 1, 9, 45, 00)
-        });
-
-        //build the map element
-        L.mapbox.accessToken = 'pk.eyJ1Ijoic2FuZG1hbjg4OSIsImEiOiJjaWV1aXd0bmYwaTRscjhtMGc5Y2NqMnB2In0.tpP5eJMyyGr-haIjRUq1jQ';
-        var osmUrl = 'https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken,
-            osmAttrib = '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>',
-            osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
-            map = new L.Map('map', { layers: [osm], center: new L.LatLng(40.72332345541449, -73.99), zoom: 15 });
-
-        var drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
-
-        var drawControl = new L.Control.Draw({
-            position: 'topright',
-            draw: {
-                polyline: {
-                    metric: true
-                },
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true,
-                    drawError: {
-                        color: '#b00b00',
-                        timeout: 1000
-                    },
-                    shapeOptions: {
-                        color: '#bada55'
-                    }
-                },
-                circle: {
-                    shapeOptions: {
-                        color: '#662d91'
-                    }
-                },
-                marker: false
-            },
-            edit: {
-                featureGroup: drawnItems,
-                remove: false
-            }
-        });
-        map.addControl(drawControl);
-
-        //on draw create, format the points correctly and query the server for the points in that time
-        map.on('draw:created', function (e) {
-            var type = e.layerType,
-                layer = e.layer;
-
-            if (type === 'marker') {
-                layer.bindPopup('A popup!');
-            }
-
-            var geoJson = layer.toGeoJSON()
-
-            var correctedPoints = BuildFormattedLatLong(geoJson);
-            
-            RegionQueryDisplay(correctedPoints, map);
-
-            drawnItems.addLayer(layer);
-        });
+        //initialize all of the UI features from Kendo and draw the Leaflet map
+        InitializeInterface();
     });
-
-    function RegionQueryDisplay(data, map) {
-        $.ajax({
-            type: "POST",
-            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/RegionQuery",
-            data: {
-                startDate: $("#startDate").val(),
-                endDate: $("#endDate").val(),
-                boundPoints: data
-            },
-            success: function (response) {
-                //window.alert(JSON.parse(response).length);
-                drawCircles(JSON.parse(response), map);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                window.alert(xhr.responseText)
-            }
-        });
-    }
-
-    //switch the latitudes and longitudes so they will be correct for the
-    //server function and then reverse them to follow left hand rule
-    function BuildFormattedLatLong(data) {
-        var returnVal = [];
-
-        var rewound = geojsonRewind(data, true);
-
-        rewound.geometry.coordinates[0].forEach(function (instance) {
-            returnVal.push({ "Latitude": instance[1], "Longitude": instance[0] });
-        });
-
-       /* for (var i = 0; i < data.length; ++i) {
-            returnVal.push({ "Latitude": data[(data.length - 1) - i][1], "Longitude": data[(data.length - 1) - i][0] });
-        }*/
-
-        return returnVal;
-    }
-
-    function drawCircles(data, map) {
-        /* Initialize the SVG layer */
-        map._initPathRoot();
-        /* We simply pick up the SVG from the map object */
-        var svg = d3.select("#map").select("svg"),
-        g = svg.append("g");
-
-            /* Add a LatLng object to each item in the dataset */
-            data.forEach(function (d) {
-                d.LatLng = new L.LatLng(d.Pickup.Latitude,
-                                        d.Pickup.Longitude)
-            })
-
-            var feature = g.selectAll("circle")
-                .data(data)
-                .enter().append("circle")
-                .style("stroke", "black")
-                .style("opacity", .6)
-                .style("fill", "red")
-                .attr("r", 5);
-
-            map.on("viewreset", update);
-            update();
-            function update() {
-                feature.attr("transform",
-                function (d) {
-                    return "translate(" +
-                        map.latLngToLayerPoint(d.LatLng).x + "," +
-                        map.latLngToLayerPoint(d.LatLng).y + ")";
-                }
-                )
-            }
-    }
 </script>

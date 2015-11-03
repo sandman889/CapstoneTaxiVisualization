@@ -12,6 +12,7 @@ namespace CapstoneTaxiVisualization.Models
         public string FareTotal { get; set; }
         public string TravelTime { get; set; }
         public string NumOfPassenger { get; set; }
+        public string TripDistance { get; set; }
 
         public QueryDto()
         {
