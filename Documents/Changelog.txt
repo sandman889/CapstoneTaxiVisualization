@@ -1,4 +1,23 @@
 CHANGELOG:
+  11.05.2015 - Lots of progress since last update. It all will be listed here
+  				-Map now displays correctly with user interface basic at first expanded later
+  				-Queries are linked between the UI and the C# server code and the SQL database
+  				-Using ajax to make those calls and dynamically add the data to the page with d3
+  				-the points are all drawn using d3.js and are added to the map as a layer
+  				-Polygon and rectangle query work correctly
+  				-Entire UI has been created as we would like
+  				-Can query for dropoff, pickup or both for a region selected
+  				-Can display dropoff, pickup or both from a query that has been returned
+  				-One month of data still stored, plan on expanding in the future
+  				-Can display the borders of all five boroughs within NYC
+  				-Can clear all regions and points from the map
+  				-Execution has been sped up drastically because it is stored locally now, there is apparently a problem with the server
+  				-Popup windows now display when clicking on a point and will display general information about the trip that point is a part of
+  				-Popup window will now display in the bottom left for information about the most recent query for data and will appear/refresh on every query
+  				-Modular design is the new philosophy behind the UI so that when visualization charts are displayed they can be moved about the screen as the user sees fit
+  				 and be resized so the map remains the most 
+  				-Many more small imporvements here and there described in the project writeups submitted in the documents folder 
+  				
   9.17.15 - A little progress on the leaflet side of things, significant progress on SQL database creation/queries, unable to make progress on 
    		    server side code. Slow week. Not much else to report, still figuring things out
 

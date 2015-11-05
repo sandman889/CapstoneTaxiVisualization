@@ -117,13 +117,18 @@
         }
         else if (type == 'polyline') {
             //code to account for line being drawn
-            alert("Tried to draw a polyline, tsk tsk not implemented yet!");
-            e.remove();
+            //alert("Tried to draw a polyline, tsk tsk not implemented yet!");
+            var test = layer.toGeoJSON();
+            drawnItems.addLayer(layer);
+            //layer.remove();
         }
         else if (type == 'circle') {
             //code to account for circle being drawn
-            alert("Tried to draw a circle, tsk tsk not implemented yet!");
-            e.remove();
+            // alert("Tried to draw a circle, tsk tsk not implemented yet!");
+            var test2 = layer.toGeoJSON();
+            var test3 = layer.getRadius();
+            drawnItems.addLayer(layer);
+            //layer.remove();
         }
     });
 
