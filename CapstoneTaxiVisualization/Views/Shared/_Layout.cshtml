@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/visualization")
+    @Styles.Render("~/Content/kendocss")
     @Scripts.Render("~/bundles/jquery")
-    
+    @Scripts.Render("~/bundles/visualization")
+    @Scripts.Render("~/bundles/leaflet-draw")
+
+    <link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+    <link href="https://api.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js"></script>
+
 </head>
 <body>
-    <div class="container body-content">
+    <div class="container body-content full-height">
         @RenderBody()
-</div>
-
+    </div>
 </body>
 </html>

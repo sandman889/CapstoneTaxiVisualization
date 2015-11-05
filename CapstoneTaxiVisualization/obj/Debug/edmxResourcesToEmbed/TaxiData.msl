@@ -23,22 +23,21 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="GetPointsFromInsideRegion" FunctionName="StagingModel.Store.GetPointsFromInsideRegion">
+    <FunctionImportMapping FunctionImportName="RegionQueryPoly" FunctionName="StagingModel.Store.RegionQueryPoly">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="StagingModel.GetPointsFromInsideRegion_Result">
-          <ScalarProperty Name="Points_Inside" ColumnName="Points Inside" />
-          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+        <ComplexTypeMapping TypeName="StagingModel.RegionQueryPoly_Result">
+          <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
           <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
-          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
-        </ComplexTypeMapping>
-      </ResultMapping>
-    </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="StagingModel.Store.NearestPointQuery">
-      <ResultMapping>
-        <ComplexTypeMapping TypeName="StagingModel.NearestPointQuery_Result">
-          <ScalarProperty Name="DistanceFrom" ColumnName="DistanceFrom" />
           <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
-          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+          <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+          <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+          <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+          <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+          <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+          <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+          <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+          <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
           <ScalarProperty Name="total_amount" ColumnName="total_amount" />
         </ComplexTypeMapping>
       </ResultMapping>

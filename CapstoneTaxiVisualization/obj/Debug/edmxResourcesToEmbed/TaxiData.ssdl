@@ -21,16 +21,11 @@
     <Property Name="pickup_geolocation" Type="geography" />
     <Property Name="dropoff_geolocation" Type="geography" />
   </EntityType>
-  <Function Name="GetPointsFromInsideRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+  <Function Name="RegionQueryPoly" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="startDateTime" Type="datetime" Mode="In" />
     <Parameter Name="endDateTime" Type="datetime" Mode="In" />
     <Parameter Name="polygonAsText" Type="text" Mode="In" />
-  </Function>
-  <Function Name="NearestPointQuery" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="startDateTime" Type="datetime" Mode="In" />
-    <Parameter Name="endDateTime" Type="datetime" Mode="In" />
-    <Parameter Name="distanceInMeters" Type="float" Mode="In" />
-    <Parameter Name="pointAsText" Type="text" Mode="In" />
+    <Parameter Name="pickDropBoth" Type="int" Mode="In" />
   </Function>
   <EntityContainer Name="StagingModelStoreContainer">
     <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
