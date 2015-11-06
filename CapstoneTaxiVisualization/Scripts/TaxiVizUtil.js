@@ -2,7 +2,7 @@
     currentId: 0,
     pointsDisplayed: 0,
     currentLayers: [],
-
+    currentData: {},
     //function that will call the server to execute the stored proc
     //for the region query display
     RegionQueryDisplay: function(data, map) {
@@ -17,6 +17,7 @@
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
                 TaxiVizUtil.DrawCircles(parsedJson, map);
                 TaxiVizUtil.CreateFloatingInfo(parsedJson);
             },
@@ -219,5 +220,115 @@
 
         //keep track of the layer to remove it
         TaxiVizUtil.currentLayers.push(polyLayer);
+    },
+
+    CreateParallelCoordsChart: function (data) {
+        //create the popup window
+        var window = $("#parcoords");
+
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                title: "Parallel Coordinates:"
+            });
+        }
+
+        //open the window and set the content to that defined above for the element
+        window.data("kendoWindow").open();
+
+        //create color scale
+        var colorScale = d3.scale.linear()
+  			.domain([0, 100000])
+  			.range(["Goldenrod", "Green"])
+  			.interpolate(d3.interpolateLab);
+
+        //this uses the parcoords javascript library
+        //to generate the graph with the ncessary functions
+        var pc = d3.parcoords()("#parcoords")
+            .data(data)
+            .hideAxis(["Pickup"])
+            .hideAxis(["Dropoff"])
+            .color(function (d) { return colorScale(d['FareTotal']); })
+            .alpha(0.35)
+            .render()
+            .ticks(10)
+            .createAxes()
+            .brushMode("1D-axes")
+            .interactive()
+
+        var exploreCount = 0;
+        var exploring = {};
+        var exploreStart = false;
+
+        //the following function and this object method call involve the drag and drop functionality
+        //of the graph so you may better explore the data
+        pc.svg
+            .selectAll(".dimension")
+            .style("cursor", "pointer")
+            .on("click", function (d) {
+                exploring[d] = d in exploring ? false : true;
+                event.preventDefault();
+                if (exploring[d]) d3.timer(explore(d, exploreCount));
+            });
+
+        function explore(dimension, count) {
+            if (!exploreStart) {
+                exploreStart = true;
+                d3.timer(pc.brush);
+            }
+
+            var speed = (Math.round(Math.random()) ? 1 : -1) * (Math.random() + 0.5);
+
+            return function (t) {
+                if (!exploring[dimension]) return true;
+                var domain = pc.yscale[dimension].domain();
+                var width = (domain[1] - domain[0]) / 4;
+                var center = width * 1.5 * (1 + Math.sin(speed * t / 1200)) + domain[0];
+
+                pc.yscale[dimension].brush.extent([
+                    d3.max([center - width * 0.01, domain[0] - width / 400]),
+                    d3.min([center + width * 1.01, domain[1] + width / 100])
+                ])(pc.g()
+                    .filter(function (d) {
+                        return d == dimension;
+                    })
+                );
+            };
+        };
+    },
+
+    DrawPieChart: function (data) {
+        //create the popup window
+        var window = $("#pieChart");
+
+        //if the window doesn't actually exist, let's create it
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                title: "Pie Chart:"
+            });
+        }
+
+        //open the window
+        window.data("kendoWindow").center().open();
+
+        //BILL WRITE CODE HERE
+        var thisIsYourChart = $("#pieChart");
+    },
+
+    DrawBarChart: function (data) {
+        //create the popup window
+        var window = $("#barChart");
+
+        //if the window doesn't actually exist, let's create it
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                title: "Bar Chart:"
+            });
+        }
+
+        //open the window
+        window.data("kendoWindow").center().open();
+
+        //BARN WRITE CODE HERE
+        var thisIsYourChart = $("#barChart");
     }
 }

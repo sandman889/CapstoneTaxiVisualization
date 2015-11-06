@@ -25,7 +25,9 @@ namespace CapstoneTaxiVisualization
                     "~/Scripts/TaxiVizUtil.js",
                     "~/Scripts/InterfaceInitialization.js",
                     "~/Scripts/kendo.all.min.js",
-                    "~/Scripts/map/NewYorkBoroughs.js"
+                    "~/Scripts/map/NewYorkBoroughs.js",
+                    "~/Scripts/d3.parcoords.js",
+                    "~/Scripts/DemoChartData.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/leaflet-draw")
@@ -44,7 +46,8 @@ namespace CapstoneTaxiVisualization
                       "~/Content/mapbox.css",
                       "~/Content/leaflet.draw.css",
                       "~/Content/themes/base/all.css",
-                      "~/Content/pure-min.css"
+                      "~/Content/pure-min.css",
+                      "~/Content/d3.parcoords.css"
                       ));
 
             bundles.Add(new StyleBundle("~/Content/kendocss").Include(

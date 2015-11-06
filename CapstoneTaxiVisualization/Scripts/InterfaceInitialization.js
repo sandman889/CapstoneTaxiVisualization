@@ -19,9 +19,9 @@
             {
                 type: "splitButton", text: "Visualizations",
                 menuButtons: [
-                    { text: "Chart 1", icon: "insert-n" },
-                    { text: "Chart 2", icon: "insert-m" },
-                    { text: "Chart 3", icon: "insert-s" }
+                    { text: "Parallel Coordinates", id: "pCoordBtn" },
+                    { text: "Pie Chart", id: "pChartBtn" },
+                    { text: "Bar Chart", id: "bChartBtn" }
                 ]
             },
             { type: "separator" },
@@ -162,5 +162,17 @@
 
     $("#clearLayersBtn").click(function () {
         TaxiVizUtil.ClearAllLayers(map);
+    });
+
+    $("#pCoordBtn").click(function () {
+        TaxiVizUtil.CreateParallelCoordsChart(TaxiVizUtil.currentData);
+    });
+
+    $("#bChartBtn").click(function () {
+        TaxiVizUtil.DrawBarChart(TaxiVizUtil.currentData);
+    });
+
+    $("#pChartBtn").click(function () {
+        TaxiVizUtil.DrawPieChart(TaxiVizUtil.currentData);
     });
 }

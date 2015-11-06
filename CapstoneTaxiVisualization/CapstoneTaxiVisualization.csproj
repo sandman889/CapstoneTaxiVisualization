@@ -156,6 +156,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\d3.parcoords.css" />
     <Content Include="Content\kendo\Black\editor.png" />
     <Content Include="Content\kendo\Black\imagebrowser.png" />
     <Content Include="Content\kendo\Black\indeterminate.gif" />
@@ -535,7 +536,7 @@
     <Content Include="Content\kendo\fonts\glyphs\KendoUIGlyphs.woff" />
     <Content Include="Content\kendo\images\kendoui.ttf" />
     <Content Include="Content\kendo\images\kendoui.woff" />
-    <Content Include="Scripts\DemoChartData.js" />
+    <Content Include="Scripts\d3.parcoords.js" />
     <Content Include="Scripts\InterfaceInitialization.js" />
     <None Include="Scripts\jquery\jquery-2.1.0-vsdoc.js" />
     <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
