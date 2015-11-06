@@ -4,9 +4,9 @@ Sprint 5:
 		-Implement the C# code to interface with the new queries that Tom writes and connect it with the front end as well
 		-Extend front end as necessary, other things to be added as I do them... 
 	Bill:
-		-Create chart using d3 - type TBD
+		-Create chart using d3 - pie chart for passenger count for all trips
 	Brendan:
-		-Create chart using d3 - type TBD	
+		-Create chart using d3 - bar chart for trip cost
 	Tom:
 		-Complete the Line query to display trips that cross a line drawn 
 		-Complete the circle query so that we can query for circles as well as polygons

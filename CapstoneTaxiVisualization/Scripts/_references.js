@@ -39,3 +39,4 @@
 /// <reference path="jquery/jquery-ui-1.11.4.js" />
 /// <reference path="kendo.all.min.js" />
 /// <reference path="map/newyorkboroughs.js" />
+/// <reference path="demochartdata.js" />
