@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="StagingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="TaxiDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Identity_Smaller">
           <Key>
             <PropertyRef Name="ID" />
@@ -26,20 +26,39 @@
           <Property Name="pickup_geolocation" Type="geography" />
           <Property Name="dropoff_geolocation" Type="geography" />
         </EntityType>
+        <Function Name="LinesIntersectionQuery" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="startDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="endDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="lineStringAsText" Type="text" Mode="In" />
+        </Function>
+        <Function Name="NearestPointQuery" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="startDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="endDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="distanceInMeters" Type="float" Mode="In" />
+          <Parameter Name="pointAsText" Type="text" Mode="In" />
+          <Parameter Name="pickDropBoth" Type="int" Mode="In" />
+        </Function>
+        <Function Name="RegionQueryCircle" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="startDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="endDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="distanceInMeters" Type="float" Mode="In" />
+          <Parameter Name="centroidAsText" Type="text" Mode="In" />
+          <Parameter Name="pickDropBoth" Type="int" Mode="In" />
+        </Function>
         <Function Name="RegionQueryPoly" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="startDateTime" Type="datetime" Mode="In" />
           <Parameter Name="endDateTime" Type="datetime" Mode="In" />
           <Parameter Name="polygonAsText" Type="text" Mode="In" />
           <Parameter Name="pickDropBoth" Type="int" Mode="In" />
         </Function>
-        <EntityContainer Name="StagingModelStoreContainer">
+        <EntityContainer Name="TaxiDataModelStoreContainer">
           <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="StagingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="TaxiDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Identity_Smaller">
           <Key>
             <PropertyRef Name="ID" />
@@ -63,13 +82,78 @@
         </EntityType>
         <EntityContainer Name="TaxiDataEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" />
-          <FunctionImport Name="RegionQueryPoly" ReturnType="Collection(StagingModel.RegionQueryPoly_Result)">
+          <FunctionImport Name="LinesIntersectionQuery" ReturnType="Collection(TaxiDataModel.LinesIntersectionQuery_Result)">
+            <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="lineStringAsText" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="NearestPointQuery" ReturnType="Collection(TaxiDataModel.NearestPointQuery_Result)">
+            <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
+            <Parameter Name="pointAsText" Mode="In" Type="String" />
+            <Parameter Name="pickDropBoth" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="RegionQueryCircle" ReturnType="Collection(TaxiDataModel.RegionQueryCircle_Result)">
+            <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="distanceInMeters" Mode="In" Type="Double" />
+            <Parameter Name="centroidAsText" Mode="In" Type="String" />
+            <Parameter Name="pickDropBoth" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="RegionQueryPoly" ReturnType="Collection(TaxiDataModel.RegionQueryPoly_Result)">
             <Parameter Name="startDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="endDateTime" Mode="In" Type="DateTime" />
             <Parameter Name="polygonAsText" Mode="In" Type="String" />
             <Parameter Name="pickDropBoth" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="LinesIntersectionQuery_Result">
+          <Property Type="DateTime" Name="pickup_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="DateTime" Name="dropoff_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="dropoff_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="dropoff_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="String" Name="passenger_count" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_time_in_secs" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_distance" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="fare_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tip_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tolls_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="NearestPointQuery_Result">
+          <Property Type="Double" Name="Distance_From" Nullable="true" />
+          <Property Type="DateTime" Name="pickup_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="DateTime" Name="dropoff_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="dropoff_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="dropoff_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="String" Name="passenger_count" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_time_in_secs" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_distance" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="fare_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tip_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tolls_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="RegionQueryCircle_Result">
+          <Property Type="DateTime" Name="pickup_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="pickup_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="DateTime" Name="dropoff_datetime" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="dropoff_longitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="Decimal" Name="dropoff_latitude" Nullable="false" Precision="9" Scale="6" />
+          <Property Type="String" Name="passenger_count" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_time_in_secs" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="trip_distance" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="fare_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tip_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="tolls_amount" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="total_amount" Nullable="true" MaxLength="10" />
+        </ComplexType>
         <ComplexType Name="RegionQueryPoly_Result">
           <Property Type="DateTime" Name="pickup_datetime" Nullable="false" Precision="23" />
           <Property Type="Decimal" Name="pickup_longitude" Nullable="false" Precision="9" Scale="6" />
@@ -90,9 +174,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="StagingModelStoreContainer" CdmEntityContainer="TaxiDataEntities">
+        <EntityContainerMapping StorageEntityContainer="TaxiDataModelStoreContainer" CdmEntityContainer="TaxiDataEntities">
           <EntitySetMapping Name="Identity_Smaller">
-            <EntityTypeMapping TypeName="StagingModel.Identity_Smaller">
+            <EntityTypeMapping TypeName="TaxiDataModel.Identity_Smaller">
               <MappingFragment StoreEntitySet="Identity_Smaller">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
@@ -113,9 +197,67 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="RegionQueryPoly" FunctionName="StagingModel.Store.RegionQueryPoly">
+          <FunctionImportMapping FunctionImportName="LinesIntersectionQuery" FunctionName="TaxiDataModel.Store.LinesIntersectionQuery">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="StagingModel.RegionQueryPoly_Result">
+              <ComplexTypeMapping TypeName="TaxiDataModel.LinesIntersectionQuery_Result">
+                <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
+                <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+                <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+                <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+                <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+                <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+                <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+                <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+                <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+                <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+                <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+                <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="TaxiDataModel.Store.NearestPointQuery">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="TaxiDataModel.NearestPointQuery_Result">
+                <ScalarProperty Name="Distance_From" ColumnName="Distance From" />
+                <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
+                <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+                <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+                <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+                <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+                <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+                <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+                <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+                <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+                <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+                <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+                <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="RegionQueryCircle" FunctionName="TaxiDataModel.Store.RegionQueryCircle">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="TaxiDataModel.RegionQueryCircle_Result">
+                <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
+                <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+                <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+                <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+                <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+                <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+                <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+                <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+                <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+                <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+                <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+                <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
+                <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="RegionQueryPoly" FunctionName="TaxiDataModel.Store.RegionQueryPoly">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="TaxiDataModel.RegionQueryPoly_Result">
                 <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
                 <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
                 <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />

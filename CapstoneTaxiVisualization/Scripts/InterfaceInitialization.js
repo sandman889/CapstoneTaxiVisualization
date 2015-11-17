@@ -108,7 +108,7 @@
         if (type == 'polygon' || type == 'rectangle') {
             //grab the points from the polygon, and format them correctly to send to the server
             var geoJson = layer.toGeoJSON()
-            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(geoJson);
+            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(geoJson, true);
 
             TaxiVizUtil.RegionQueryDisplay(correctedPoints, map);
 
@@ -117,18 +117,23 @@
         }
         else if (type == 'polyline') {
             //code to account for line being drawn
-            //alert("Tried to draw a polyline, tsk tsk not implemented yet!");
             var test = layer.toGeoJSON();
+            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
+
+            TaxiVizUtil.LineIntersectionDisplay(correctedPoints, map);
+
             drawnItems.addLayer(layer);
-            //layer.remove();
+            TaxiVizUtil.currentLayers.push(layer);
         }
         else if (type == 'circle') {
             //code to account for circle being drawn
-            // alert("Tried to draw a circle, tsk tsk not implemented yet!");
-            var test2 = layer.toGeoJSON();
-            var test3 = layer.getRadius();
+            var centroid = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false)[0];
+            var radius = layer.getRadius();
+
+            TaxiVizUtil.CircleQueryDisplay(centroid, radius, map);
+
             drawnItems.addLayer(layer);
-            //layer.remove();
+            TaxiVizUtil.currentLayers.push(layer);
         }
     });
 

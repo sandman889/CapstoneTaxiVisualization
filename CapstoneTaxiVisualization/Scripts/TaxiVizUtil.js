@@ -27,16 +27,72 @@
         });
     },
 
+    CircleQueryDisplay: function(centroid, radius, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetPointsInCircleRegion",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                radius: radius,
+                centroid: centroid,
+                queryFor: Number($("input[name='pointsToQuery']:checked").val())
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    LineIntersectionDisplay: function(data, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetTripIntersectionByLine",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                linePoints: data
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
     //takes the GeoJson object and makes sure the points
     //follow left hand rule so SQL can spatially query them
-    BuildFormattedLatLong: function (data) {
+    BuildFormattedLatLong: function (data, rewind) {
         var returnVal = [];
 
-        var rewound = geojsonRewind(data, true);
+        if (rewind) {
+            data = geojsonRewind(data, true);
+        }
 
-        rewound.geometry.coordinates[0].forEach(function (instance) {
-            returnVal.push({ "Latitude": instance[1], "Longitude": instance[0] });
-        });
+        if (data.geometry.type == "Polygon") {
+            data.geometry.coordinates[0].forEach(function (instance) {
+                returnVal.push({ "Latitude": instance[1], "Longitude": instance[0] });
+            });
+        }
+        else if (data.geometry.type == "Point") {
+            returnVal.push({ "Latitude": data.geometry.coordinates[1], "Longitude": data.geometry.coordinates[0] })
+        }
+        else if (data.geometry.type == "LineString") {
+            data.geometry.coordinates.forEach(function (instance) {
+                returnVal.push({ "Latitude": instance[1], "Longitude": instance[0] });
+            });
+        }
 
         return returnVal;
     },
@@ -312,6 +368,52 @@
 
         //BILL WRITE CODE HERE
         var thisIsYourChart = $("#pieChart");
+
+        var width = 960,
+		    height = 500,
+		    radius = Math.min(width, height) / 2;
+
+        var color = d3.scale.ordinal()
+		    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+        var arc = d3.svg.arc()
+		    .outerRadius(radius - 10)
+		    .innerRadius(0);
+
+        var pie = d3.layout.pie()
+		    .sort(null)
+		    .value(function (d) { return d.population; });
+
+        var svg = d3.select("#pieChart").append("svg")
+		    .attr("width", width)
+		    .attr("height", height)
+		  .append("g")
+		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        d3.csv("Scripts/data.csv", function (error, data) {
+
+            data.forEach(function (d) {
+                d.population = +d.population;
+            });
+
+            var g = svg.selectAll(".arc")
+                .data(pie(data))
+              .enter().append("g")
+                .attr("class", "arc");
+
+            g.append("path")
+                .attr("d", arc)
+                .style("fill", function (d) { return color(d.data.age); });
+
+            g.append("text")
+                .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+                .attr("dy", ".35em")
+                .style("text-anchor", "middle")
+                .text(function (d) { return d.data.age; });
+
+        });
+
+        window.data("kendoWindow").contents(svg.html);
     },
 
     DrawBarChart: function (data) {
