@@ -29,6 +29,73 @@ namespace CapstoneTaxiVisualization
     
         public virtual DbSet<Identity_Smaller> Identity_Smaller { get; set; }
     
+        public virtual ObjectResult<LinesIntersectionQuery_Result> LinesIntersectionQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string lineStringAsText)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var lineStringAsTextParameter = lineStringAsText != null ?
+                new ObjectParameter("lineStringAsText", lineStringAsText) :
+                new ObjectParameter("lineStringAsText", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LinesIntersectionQuery_Result>("LinesIntersectionQuery", startDateTimeParameter, endDateTimeParameter, lineStringAsTextParameter);
+        }
+    
+        public virtual ObjectResult<NearestPointQuery_Result> NearestPointQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string pointAsText, Nullable<int> pickDropBoth)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var distanceInMetersParameter = distanceInMeters.HasValue ?
+                new ObjectParameter("distanceInMeters", distanceInMeters) :
+                new ObjectParameter("distanceInMeters", typeof(double));
+    
+            var pointAsTextParameter = pointAsText != null ?
+                new ObjectParameter("pointAsText", pointAsText) :
+                new ObjectParameter("pointAsText", typeof(string));
+    
+            var pickDropBothParameter = pickDropBoth.HasValue ?
+                new ObjectParameter("pickDropBoth", pickDropBoth) :
+                new ObjectParameter("pickDropBoth", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<NearestPointQuery_Result>("NearestPointQuery", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, pointAsTextParameter, pickDropBothParameter);
+        }
+    
+        public virtual ObjectResult<RegionQueryCircle_Result> RegionQueryCircle(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string centroidAsText, Nullable<int> pickDropBoth)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var distanceInMetersParameter = distanceInMeters.HasValue ?
+                new ObjectParameter("distanceInMeters", distanceInMeters) :
+                new ObjectParameter("distanceInMeters", typeof(double));
+    
+            var centroidAsTextParameter = centroidAsText != null ?
+                new ObjectParameter("centroidAsText", centroidAsText) :
+                new ObjectParameter("centroidAsText", typeof(string));
+    
+            var pickDropBothParameter = pickDropBoth.HasValue ?
+                new ObjectParameter("pickDropBoth", pickDropBoth) :
+                new ObjectParameter("pickDropBoth", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RegionQueryCircle_Result>("RegionQueryCircle", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, centroidAsTextParameter, pickDropBothParameter);
+        }
+    
         public virtual ObjectResult<RegionQueryPoly_Result> RegionQueryPoly(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string polygonAsText, Nullable<int> pickDropBoth)
         {
             var startDateTimeParameter = startDateTime.HasValue ?

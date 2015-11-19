@@ -12,3 +12,49 @@
 .full-height {
     height: 100%;
 }
+
+.toggle-btn * {
+    width:140px;
+    height:30px;
+    line-height:30px;
+}
+.toggle-btn div {
+    display:inline-block;
+    position:relative;
+    margin:5px 2px;
+}
+
+.toggle-btn div label {
+    position:absolute;
+    z-index:0;
+    padding:0;
+    text-align:center;
+}
+
+.toggle-btn div input {
+    position:absolute;
+    z-index:1;
+    cursor:pointer;
+    opacity:0;
+}
+
+.toggle-btn div:hover label {
+    border:solid 1px #a0d5dc !important; 
+    background:#f1fdfe;
+}
+
+.toggle-btn div input:checked + label {
+    background:lightgreen;
+    border:solid 1px green !important; 
+}
+
+#barChart rect {
+    fill: steelblue;
+}
+
+#barChart text {
+    fill: white;
+    font: 10px sans-serif;
+    text-anchor: end;
+}
+

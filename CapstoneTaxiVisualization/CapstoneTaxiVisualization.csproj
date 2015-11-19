@@ -133,9 +133,18 @@
     <Compile Include="Identity_Smaller.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
+    <Compile Include="LinesIntersectionQuery_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LatLong.cs" />
     <Compile Include="Models\QueryDto.cs" />
+    <Compile Include="NearestPointQuery_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegionQueryCircle_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="RegionQueryPoly_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
@@ -156,6 +165,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\d3.parcoords.css" />
     <Content Include="Content\kendo\Black\editor.png" />
     <Content Include="Content\kendo\Black\imagebrowser.png" />
     <Content Include="Content\kendo\Black\indeterminate.gif" />
@@ -535,7 +545,9 @@
     <Content Include="Content\kendo\fonts\glyphs\KendoUIGlyphs.woff" />
     <Content Include="Content\kendo\images\kendoui.ttf" />
     <Content Include="Content\kendo\images\kendoui.woff" />
+    <Content Include="Scripts\d3.parcoords.js" />
     <Content Include="Scripts\InterfaceInitialization.js" />
+    <Content Include="Scripts\data.csv" />
     <None Include="Scripts\jquery\jquery-2.1.0-vsdoc.js" />
     <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\jquery\jquery-2.1.0.js" />
