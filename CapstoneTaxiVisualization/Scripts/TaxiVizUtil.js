@@ -1,11 +1,15 @@
 ﻿var TaxiVizUtil = {
     currentId: 0,
     pointsDisplayed: 0,
+    boroughs: {},
     currentLayers: [],
     currentData: {},
     //function that will call the server to execute the stored proc
     //for the region query display
-    RegionQueryDisplay: function(data, map) {
+    RegionQueryDisplay: function (data, map) {
+        var toolbar = $("#toolbar").data("kendoToolBar");
+        var selected = toolbar.getSelectedFromGroup("pointsToQuery");
+
         $.ajax({
             type: "POST",
             url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/RegionQuery",
@@ -13,7 +17,7 @@
                 startDate: $("#startDate").val(),
                 endDate: $("#endDate").val(),
                 boundPoints: data,
-                queryFor: Number($("input[name='pointsToQuery']:checked").val())
+                queryFor: Number(selected.attr("value"))
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -27,7 +31,10 @@
         });
     },
 
-    CircleQueryDisplay: function(centroid, radius, map) {
+    CircleQueryDisplay: function (centroid, radius, map) {
+        var toolbar = $("#toolbar").data("kendoToolBar");
+        var selected = toolbar.getSelectedFromGroup("pointsToQuery");
+
         $.ajax({
             type: "POST",
             url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetPointsInCircleRegion",
@@ -36,7 +43,7 @@
                 endDate: $("#endDate").val(),
                 radius: radius,
                 centroid: centroid,
-                queryFor: Number($("input[name='pointsToQuery']:checked").val())
+                queryFor: Number(selected.attr("value"))
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -50,7 +57,7 @@
         });
     },
 
-    LineIntersectionDisplay: function(data, map) {
+    LineIntersectionDisplay: function (data, map) {
         $.ajax({
             type: "POST",
             url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetTripIntersectionByLine",
@@ -110,7 +117,10 @@
         var pickupData = data;
         var dropoffData = $.extend(true, [], data);
 
-        var toDisplay = $("input[name='pointsToDisplay']:checked").val();
+        var toolbar = $("#toolbar").data("kendoToolBar");
+        var selected = toolbar.getSelectedFromGroup("pointsToDisplay");
+
+        var toDisplay = selected.attr("value");
 
         if (toDisplay == "pickups" || toDisplay == "both") {
             /* Add a LatLng object to each item in the dataset */
@@ -261,39 +271,59 @@
         return feature;
     },
 
-    DrawBorough: function (points, map, shapeColor) {
-        //place to collect the vertices created from the latitude and longitude points
-        var vertices = [];
+    ToggleBorough: function (points, map, shapeColor, name) {
+        if (TaxiVizUtil.boroughs.hasOwnProperty(name)) {
+            //remove the layer from the map and remove the property from the object
+            map.removeLayer(TaxiVizUtil.boroughs[name]);
+            delete TaxiVizUtil.boroughs[name];
+        }
+        else {
+            //place to collect the vertices created from the latitude and longitude points
+            var vertices = [];
 
-        //create the leaflet latlng objects for each points
-        points.forEach(function (ele) {
-            vertices.push(new L.LatLng(ele.Latitude, ele.Longitude));
-        })
+            //create the leaflet latlng objects for each points
+            points.forEach(function (ele) {
+                vertices.push(new L.LatLng(ele.Latitude, ele.Longitude));
+            })
 
-        //add the polygon to the map
-        var polyLayer = L.polygon(vertices, { color: shapeColor });
-        polyLayer.addTo(map);
+            //add the polygon to the map
+            var polyLayer = L.polygon(vertices, { color: shapeColor });
+            polyLayer.addTo(map);
 
-        //keep track of the layer to remove it
-        TaxiVizUtil.currentLayers.push(polyLayer);
+            //keep track of the layer to remove it
+            TaxiVizUtil.boroughs[name] = polyLayer;
+        }
     },
 
     CreateParallelCoordsChart: function (data) {
         //create the popup window
+        var popupHeight = Number($(document).height()) * 0.8;
+        var popupWidth = Number($(document).width()) * 0.7;
+
+        $("#mainContent").append("<div id='parcoords' class='parcoords' style='width:" + popupWidth + "px;height:" + popupHeight + "px'></div>");
+
         var window = $("#parcoords");
 
+        //if the window doesn't actually exist, let's create it
         if (!window.data("kendoWindow")) {
             window.kendoWindow({
-                title: "Parallel Coordinates:"
+                title: "Parallel Coordinates:",
+                close: function (e) {
+                    $(this.element).remove();
+                },
+                resize: function (e) {
+                    $(this.element).height(this.size.height - 50);
+                    $(this.element).width(this.size.width - 50);
+                }
             });
         }
 
         //open the window and set the content to that defined above for the element
-        window.data("kendoWindow").open();
+        window.data("kendoWindow").center().open();
 
         //create color scale
         var colorScale = d3.scale.linear()
-  			.domain([0, 100000])
+  			.domain([0, 100])
   			.range(["Goldenrod", "Green"])
   			.interpolate(d3.interpolateLab);
 
@@ -303,6 +333,11 @@
             .data(data)
             .hideAxis(["Pickup"])
             .hideAxis(["Dropoff"])
+            .hideAxis(["LatLng"])
+            .hideAxis(["pointId"])
+            .height(popupHeight - 50)
+            .width(popupWidth - 50)
+            .autoscale()
             .color(function (d) { return colorScale(d['FareTotal']); })
             .alpha(0.35)
             .render()
@@ -325,6 +360,10 @@
                 event.preventDefault();
                 if (exploring[d]) d3.timer(explore(d, exploreCount));
             });
+
+        $("#parcoords").resize(function () {
+            pc.autoscale();
+        });
 
         function explore(dimension, count) {
             if (!exploreStart) {
@@ -349,17 +388,22 @@
                     })
                 );
             };
-        };
+        }
     },
 
     DrawPieChart: function (data) {
+        $("#mainContent").append("<div id='pieChart'></div>");
+
         //create the popup window
         var window = $("#pieChart");
 
         //if the window doesn't actually exist, let's create it
         if (!window.data("kendoWindow")) {
             window.kendoWindow({
-                title: "Pie Chart:"
+                title: "Pie Chart:",
+                close: function (e) {
+                    $(this.element).remove();
+                }
             });
         }
 
@@ -413,7 +457,7 @@
 
         });
 
-        window.data("kendoWindow").contents(svg.html);
+        //window.data("kendoWindow").contents(svg.html);
     },
 
     DrawBarChart: function (data) {
@@ -430,7 +474,38 @@
         //open the window
         window.data("kendoWindow").center().open();
 
-        //BARN WRITE CODE HERE
-        var thisIsYourChart = $("#barChart");
+
+        var data = [4, 8, 15, 16, 23, 42];
+        console.log(TaxiVizUtil.currentData);
+
+
+        var width = 420;
+        var barHeight = 20;
+
+        var x = d3.scale.linear()
+            .domain([0, d3.max(data)])
+            .range([0, width]);
+
+        var chart = d3.select("#barChart")
+            .attr("width", width)
+            .attr("height", barHeight * data.length);
+
+        var bar = chart.selectAll("g")
+            .data(data)
+            .enter().append("g")
+            .attr("transform", function (d, i) { return "translate(0," + i * barHeight + ")"; });
+
+        bar.append("rect")
+            .attr("width", x)
+            .attr("height", barHeight - 1);
+
+        bar.append("text")
+            .attr("x", function (d) { return x(d) - 3; })
+            .attr("y", barHeight / 2)
+            .attr("dy", ".35em")
+            .text(function (d) { return d; });
+
+        window.data("kendoWindow").content(chart.html);
+
     }
 }

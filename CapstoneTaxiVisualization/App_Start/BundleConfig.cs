@@ -52,8 +52,8 @@ namespace CapstoneTaxiVisualization
 
             bundles.Add(new StyleBundle("~/Content/kendocss").Include(
                 "~/Content/kendo/kendo.common.min.css",              
-                "~/Content/kendo/kendo.metroblack.min.css",
-                "~/Content/kendo/kendo.metroblack.mobile.min.css"
+                "~/Content/kendo/kendo.metro.min.css",
+                "~/Content/kendo/kendo.common.mobile.min.css"
                 ));
         }
     }
