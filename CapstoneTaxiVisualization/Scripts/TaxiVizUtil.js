@@ -4,6 +4,8 @@
     boroughs: {},
     currentLayers: [],
     currentData: {},
+    isDualSelect: false,
+    dualSelectLayer: null,
     //function that will call the server to execute the stored proc
     //for the region query display
     RegionQueryDisplay: function (data, map) {
@@ -65,6 +67,53 @@
                 startDate: $("#startDate").val(),
                 endDate: $("#endDate").val(),
                 linePoints: data
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    NearestPointQueryDisplay: function (data, map) {
+        var toolbar = $("#toolbar").data("kendoToolBar");
+        var selected = toolbar.getSelectedFromGroup("pointsToQuery");
+
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetNearestPoint",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                point: data[0],
+                queryFor: Number(selected.attr("value"))
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    DualRegionDisplay: function(regionOne, regionTwo, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/DualRegionQuery",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                regionOnePoints: regionOne,
+                regionTwoPoints: regionTwo
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -288,6 +337,13 @@
 
             //add the polygon to the map
             var polyLayer = L.polygon(vertices, { color: shapeColor });
+
+            polyLayer.on("click", function (e) {
+                var boundPoints = TaxiVizUtil.BuildFormattedLatLong(this.toGeoJSON(), true);
+
+               // TaxiVizUtil.RegionQueryDisplay(boundPoints, map);
+            });
+
             polyLayer.addTo(map);
 
             //keep track of the layer to remove it
@@ -456,8 +512,6 @@
                 .text(function (d) { return d.data.age; });
 
         });
-
-        //window.data("kendoWindow").contents(svg.html);
     },
 
     DrawBarChart: function (data) {
@@ -507,5 +561,9 @@
 
         window.data("kendoWindow").content(chart.html);
 
+    },
+
+    ToggleDualSelect: function () {
+        TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
     }
 }

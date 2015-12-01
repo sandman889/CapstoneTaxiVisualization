@@ -1,4 +1,12 @@
 CHANGELOG:
+  11.19.2015:
+    -UI redone to be more functional on different sized screens
+    -Line, circle and nearest point query completed in SQL
+    -Line, and circle query implemented in the interface
+    -Parallel coordinates chart created to visualize data
+    -Pie chart unfinished to visualize data
+    -Bar chart unfinished to visualize data
+    -Changed the borough regions to be togglable instead of just drawing them
   11.05.2015 - Lots of progress since last update. It all will be listed here
   				-Map now displays correctly with user interface basic at first expanded later
   				-Queries are linked between the UI and the C# server code and the SQL database

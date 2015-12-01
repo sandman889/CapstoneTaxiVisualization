@@ -116,5 +116,26 @@ namespace CapstoneTaxiVisualization
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RegionQueryPoly_Result>("RegionQueryPoly", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter, pickDropBothParameter);
         }
+    
+        public virtual ObjectResult<TwoRegionQueryPoly_Result> TwoRegionQueryPoly(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string polygonAsText, string polygonAsText2)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var polygonAsTextParameter = polygonAsText != null ?
+                new ObjectParameter("polygonAsText", polygonAsText) :
+                new ObjectParameter("polygonAsText", typeof(string));
+    
+            var polygonAsText2Parameter = polygonAsText2 != null ?
+                new ObjectParameter("polygonAsText2", polygonAsText2) :
+                new ObjectParameter("polygonAsText2", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TwoRegionQueryPoly_Result>("TwoRegionQueryPoly", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter, polygonAsText2Parameter);
+        }
     }
 }

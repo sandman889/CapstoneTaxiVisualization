@@ -31,7 +31,7 @@
                     color: '#662d91'
                 }
             },
-            marker: false
+            marker: true
         },
         edit: {
             featureGroup: drawnItems,
@@ -45,45 +45,65 @@
         var type = e.layerType,
             layer = e.layer;
 
-        if (type == 'polygon' || type == 'rectangle') {
-            //grab the points from the polygon, and format them correctly to send to the server
-            var geoJson = layer.toGeoJSON()
-            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(geoJson, true);
 
-            TaxiVizUtil.RegionQueryDisplay(correctedPoints, map);
+        if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer == null) {
+            TaxiVizUtil.dualSelectLayer = layer;
 
             drawnItems.addLayer(layer);
-            TaxiVizUtil.currentLayers.push(layer);
         }
-        else if (type == 'polyline') {
-            //code to account for line being drawn
-            var test = layer.toGeoJSON();
-            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
-
-            TaxiVizUtil.LineIntersectionDisplay(correctedPoints, map);
-
-            drawnItems.addLayer(layer);
-            TaxiVizUtil.currentLayers.push(layer);
+        
+        else if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer.length != null) {
+            
         }
-        else if (type == 'circle') {
-            //code to account for circle being drawn
-            var centroid = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false)[0];
-            var radius = layer.getRadius();
 
-            TaxiVizUtil.CircleQueryDisplay(centroid, radius, map);
+        else {
+            if (type == 'polygon' || type == 'rectangle') {
+                //grab the points from the polygon, and format them correctly to send to the server
+                var geoJson = layer.toGeoJSON()
+                var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(geoJson, true);
 
-            drawnItems.addLayer(layer);
-            TaxiVizUtil.currentLayers.push(layer);
+                TaxiVizUtil.RegionQueryDisplay(correctedPoints, map);
+
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
+            else if (type == 'polyline') {
+                //code to account for line being drawn
+                var test = layer.toGeoJSON();
+                var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
+
+                TaxiVizUtil.LineIntersectionDisplay(correctedPoints, map);
+
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
+            else if (type == 'circle') {
+                //code to account for circle being drawn
+                var centroid = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false)[0];
+                var radius = layer.getRadius();
+
+                TaxiVizUtil.CircleQueryDisplay(centroid, radius, map);
+
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
+            else if (type == "marker") {
+                var point = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
+
+                TaxiVizUtil.NearestPointQueryDisplay(point, map);
+
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
         }
     });
 
     $("#toolbar").kendoToolBar({
         items: [
-            {type: "seperator"}, 
             { template: "<strong>Start Date: </strong><input type='text' id='startDate'/>" },
             { type: "separator" },
             { template: "<strong>End Date: </strong><input type='text' id='endDate'/>" },
-            {type: "seperator" },
+            { type: "separator" },
             {
                 type: "buttonGroup",
                 buttons: [
@@ -102,6 +122,12 @@
                ]
            },
             { type: "separator" },
+            { type: "button", text: "Toggle Dual Select", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleDualSelect(); } }
+        ]
+    });
+
+    $("#toolbar2").kendoToolBar({
+        items: [
             {
                 type: "splitButton", id: "drawBoroughBtn", text: "Select Boroughs",
                 menuButtons: [
@@ -113,19 +139,16 @@
                 ]
             },
             { type: "separator" },
-            { type: "button", id: "clearLayersBtn", text: "Clear Map", },
+            { type: "button", id: "clearLayersBtn", text: "Clear Map", click: function (e) { TaxiVizUtil.ClearAllLayers(map); } },
             { type: "separator" },
-            //{ type: "button", id: "splitViewBtn", text: "Split View" },
-            //{ type: "separator" },
             {
                 type: "splitButton", text: "Visualizations",
                 menuButtons: [
-                    { type: "button", text: "Parallel Coordinates", id: "pCoordBtn" },
-                    { type: "button", text: "Pie Chart", id: "pChartBtn" },
-                    { type: "button", text: "Bar Chart", id: "bChartBtn" }
+                    { type: "button", text: "Parallel Coordinates", click: function (e) { TaxiVizUtil.CreateParallelCoordsChart(TaxiVizUtil.currentData); } },
+                    { type: "button", text: "Pie Chart", click: function (e) { TaxiVizUtil.DrawPieChart(TaxiVizUtil.currentData); } }, 
+                    { type: "button", text: "Bar Chart", click: function (e) { TaxiVizUtil.DrawBarChart(TaxiVizUtil.currentData); } }
                 ]
             },
-           { type: "separator" }
         ]
     });
 
@@ -150,20 +173,4 @@
             count++;
         }
     });*/
-
-    $("#clearLayersBtn").click(function () {
-        TaxiVizUtil.ClearAllLayers(map);
-    });
-
-    $("#pCoordBtn").click(function () {
-        TaxiVizUtil.CreateParallelCoordsChart(TaxiVizUtil.currentData);
-    });
-
-    $("#bChartBtn").click(function () {
-        TaxiVizUtil.DrawBarChart(TaxiVizUtil.currentData);
-    });
-
-    $("#pChartBtn").click(function () {
-        TaxiVizUtil.DrawPieChart(TaxiVizUtil.currentData);
-    });
 }

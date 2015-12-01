@@ -46,6 +46,12 @@
     <Parameter Name="polygonAsText" Type="text" Mode="In" />
     <Parameter Name="pickDropBoth" Type="int" Mode="In" />
   </Function>
+  <Function Name="TwoRegionQueryPoly" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="startDateTime" Type="datetime" Mode="In" />
+    <Parameter Name="endDateTime" Type="datetime" Mode="In" />
+    <Parameter Name="polygonAsText" Type="text" Mode="In" />
+    <Parameter Name="polygonAsText2" Type="text" Mode="In" />
+  </Function>
   <EntityContainer Name="TaxiDataModelStoreContainer">
     <EntitySet Name="Identity_Smaller" EntityType="Self.Identity_Smaller" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
