@@ -356,26 +356,7 @@
         var popupHeight = Number($(document).height()) * 0.8;
         var popupWidth = Number($(document).width()) * 0.7;
 
-        $("#mainContent").append("<div id='parcoords' class='parcoords' style='width:" + popupWidth + "px;height:" + popupHeight + "px'></div>");
-
-        var window = $("#parcoords");
-
-        //if the window doesn't actually exist, let's create it
-        if (!window.data("kendoWindow")) {
-            window.kendoWindow({
-                title: "Parallel Coordinates:",
-                close: function (e) {
-                    $(this.element).remove();
-                },
-                resize: function (e) {
-                    $(this.element).height(this.size.height - 50);
-                    $(this.element).width(this.size.width - 50);
-                }
-            });
-        }
-
-        //open the window and set the content to that defined above for the element
-        window.data("kendoWindow").center().open();
+        $("#mainContent").append("<div id='parcoords' class='parcoords'></div>");
 
         //create color scale
         var colorScale = d3.scale.linear()
@@ -417,10 +398,6 @@
                 if (exploring[d]) d3.timer(explore(d, exploreCount));
             });
 
-        $("#parcoords").resize(function () {
-            pc.autoscale();
-        });
-
         function explore(dimension, count) {
             if (!exploreStart) {
                 exploreStart = true;
@@ -445,6 +422,28 @@
                 );
             };
         }
+
+        var window = $("#parcoords");
+
+        //if the window doesn't actually exist, let's create it
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                title: "Parallel Coordinates:",
+                height: popupHeight,
+                width: popupWidth,
+                close: function (e) {
+                    $(this.element).remove();
+                },
+                resize: function (e) {
+                    pc.height(Number(this._size.height));
+                    pc.width(Number(this._size.width));
+                    pc.data(data);
+                }
+            });
+        }
+
+        //open the window and set the content to that defined above for the element
+        window.data("kendoWindow").center().open();
     },
 
     DrawPieChart: function (data) {
@@ -565,5 +564,9 @@
 
     ToggleDualSelect: function () {
         TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
+    },
+
+    DrawParallelCoords: function () {
+
     }
 }

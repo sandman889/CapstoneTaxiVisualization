@@ -46,14 +46,27 @@
             layer = e.layer;
 
 
-        if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer == null) {
+        if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer == null && (type == 'polygon' || type == 'rectangle')) {
+            //save the layer for later and add it to the map
+            TaxiVizUtil.currentLayers.push(layer);
             TaxiVizUtil.dualSelectLayer = layer;
-
             drawnItems.addLayer(layer);
         }
         
-        else if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer.length != null) {
-            
+        else if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer != null && (type == 'polygon' || type == 'rectangle')) {
+            //create the corrected points for each one of the layers
+            var polygonPointsOne = TaxiVizUtil.BuildFormattedLatLong(TaxiVizUtil.dualSelectLayer.toGeoJSON(), true);
+            var polygonPointsTwo = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), true);
+
+            //fire off the server code to grab and display the points
+            TaxiVizUtil.DualRegionDisplay(polygonPointsOne, polygonPointsTwo, map);
+
+            TaxiVizUtil.dualSelectLayer = layer;
+            drawnItems.addLayer(layer);
+            TaxiVizUtil.currentLayers.push(layer);
+
+            //reset the initial layer 
+            TaxiVizUtil.dualSelectLayer = null;
         }
 
         else {

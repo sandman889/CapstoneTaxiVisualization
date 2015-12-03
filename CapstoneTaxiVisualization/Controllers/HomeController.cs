@@ -27,35 +27,14 @@ namespace CapstoneTaxiVisualization.Controllers
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
-                //divide the polygon in half
-                var geoPoly = new SqlGeographyBuilder();
-
-                //set the SRID and chose the sql geography datatype
-                geoPoly.SetSrid(4326);
-                geoPoly.BeginGeography(OpenGisGeographyType.Polygon);
-
-                //set the initial point to skip, and use that to begin the figure
-                var initialPoint = boundPoints.First();
-                geoPoly.BeginFigure(initialPoint.Latitude, initialPoint.Longitude);
-
-                foreach (var point in boundPoints)
-                {
-                    if (point != initialPoint)
-                    {
-                        //add each point to the geography poly
-                        geoPoly.AddLine(point.Latitude, point.Longitude);
-                    }
-                }
-
-                //end the configuration of the geography
-                geoPoly.EndFigure();
-                geoPoly.EndGeography();
+                //build the geography polygon from the points
+                SqlGeographyBuilder geoPoly = CreatePolygonFromPoints(boundPoints);
 
                 //the final SQL polygon element
                 SqlGeography sqlPoly = geoPoly.ConstructedGeography;
-                //DbGeography geog = DbGeography.FromText(sqlPoly.ToString(), 4326);
 
-                var returnVal = context.RegionQueryPoly(startDate, endDate, sqlPoly.ToString(), queryFor)
+                //run the stored procedure and make a list of the data
+                List<QueryDto> returnVal = context.RegionQueryPoly(startDate, endDate, sqlPoly.ToString(), queryFor)
                     .Select(x => new QueryDto
                     {
                         Pickup = new LatLong
@@ -83,7 +62,7 @@ namespace CapstoneTaxiVisualization.Controllers
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
-                var geoPoint = new SqlGeographyBuilder();
+                SqlGeographyBuilder geoPoint = new SqlGeographyBuilder();
 
                 //set the SRID and build the sql geography point
                 geoPoint.SetSrid(4326);
@@ -95,7 +74,7 @@ namespace CapstoneTaxiVisualization.Controllers
                 SqlGeography sqlPoint = geoPoint.ConstructedGeography;
 
 
-                var returnVal = context.RegionQueryCircle(startDate, endDate, radius, sqlPoint.ToString(), queryFor)
+                List<QueryDto> returnVal = context.RegionQueryCircle(startDate, endDate, radius, sqlPoint.ToString(), queryFor)
                         .Select(x => new QueryDto
                             {
                                 Pickup = new LatLong
@@ -123,7 +102,7 @@ namespace CapstoneTaxiVisualization.Controllers
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
-                var geoPoint = new SqlGeographyBuilder();
+                SqlGeographyBuilder geoPoint = new SqlGeographyBuilder();
 
                 //set the SRID and build the sql geography point
                 geoPoint.SetSrid(4326);
@@ -161,7 +140,9 @@ namespace CapstoneTaxiVisualization.Controllers
                     initialDistance *= 2;
                 }
 
-                return JsonConvert.SerializeObject(returnVal);
+                //var test = new List<QueryDto>();
+                //test.Add(returnVal.First());
+                return JsonConvert.SerializeObject(new QueryDto[] {returnVal.First()});
             }
         }
 
@@ -170,7 +151,7 @@ namespace CapstoneTaxiVisualization.Controllers
         {
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
-                var geoLine = new SqlGeographyBuilder();
+                SqlGeographyBuilder geoLine = new SqlGeographyBuilder();
 
                 geoLine.SetSrid(4326);
                 geoLine.BeginGeography(OpenGisGeographyType.LineString);
@@ -181,7 +162,7 @@ namespace CapstoneTaxiVisualization.Controllers
 
                 SqlGeography sqlLine = geoLine.ConstructedGeography;
 
-                var returnVal = context.LinesIntersectionQuery(startDate, endDate, sqlLine.ToString())
+                List<QueryDto> returnVal = context.LinesIntersectionQuery(startDate, endDate, sqlLine.ToString())
                                     .Select(x => new QueryDto
                                     {
                                         Pickup = new LatLong
@@ -210,29 +191,66 @@ namespace CapstoneTaxiVisualization.Controllers
             using (TaxiDataEntities context = new TaxiDataEntities())
             {
                 //build both of the polygons to send to the server
-                var poly1 = new SqlGeographyBuilder();
-                var poly2 = new SqlGeographyBuilder();
+                SqlGeographyBuilder poly1 = CreatePolygonFromPoints(regionOnePoints);
+                SqlGeographyBuilder poly2 = CreatePolygonFromPoints(regionTwoPoints);
 
-                poly1.SetSrid(4326);
-                poly2.SetSrid(4326);
+                //grab the constructed geography for each polygon
+                SqlGeography polygon1 = poly1.ConstructedGeography;
+                SqlGeography polygon2 = poly2.ConstructedGeography;
 
-                poly1.BeginGeography(OpenGisGeographyType.Polygon);
-                poly2.BeginGeography(OpenGisGeographyType.Polygon);
+                List<QueryDto> returnVal = context.TwoRegionQueryPoly(startDate, endDate, polygon1.ToString(), polygon2.ToString())
+                                            .Select(x => new QueryDto
+                                            {
+                                                Pickup = new LatLong
+                                                {
+                                                    Latitude = (double)x.pickup_latitude,
+                                                    Longitude = (double)x.pickup_longitude
+                                                },
+                                                Dropoff = new LatLong
+                                                {
+                                                    Latitude = (double)x.dropoff_latitude,
+                                                    Longitude = (double)x.dropoff_longitude
+                                                },
+                                                FareTotal = x.total_amount,
+                                                TravelTime = x.trip_time_in_secs,
+                                                NumOfPassenger = x.passenger_count,
+                                                TripDistance = x.trip_distance
+                                            }).ToList();
 
-                //polygon 1
-                //poly1.BeginFigure()
+                return JsonConvert.SerializeObject(returnVal);
             }
-            return JsonConvert.SerializeObject("");
         }
 
-      /*  private SqlGeographyBuilder CreatePolygonFromPoints(List<LatLong> points)
+        /// <summary>
+        /// Create a SqlGeography builder for the polygon specified by the points
+        /// </summary>
+        /// <param name="points">Latitude longitude points for the polygon</param>
+        /// <returns>SqlGeographyBuilder for the polygon</returns>
+        private SqlGeographyBuilder CreatePolygonFromPoints(List<LatLong> points)
         {
             SqlGeographyBuilder polygon = new SqlGeographyBuilder();
             polygon.SetSrid(4326);
 
             polygon.BeginGeography(OpenGisGeographyType.Polygon);
 
+            //set the initial point to skip, and use that to begin the figure
+            LatLong initialPoint = points.First();
+            polygon.BeginFigure(initialPoint.Latitude, initialPoint.Longitude);
 
-        }*/
+            foreach (var point in points)
+            {
+                if (point != initialPoint)
+                {
+                    //add each point to the geography poly
+                    polygon.AddLine(point.Latitude, point.Longitude);
+                }
+            }
+
+            //end the configuration of the geography
+            polygon.EndFigure();
+            polygon.EndGeography();
+
+            return polygon;
+        }
     }
 }
