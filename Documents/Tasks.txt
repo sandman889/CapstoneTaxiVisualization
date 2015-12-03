@@ -1,4 +1,38 @@
 TASKS:
+Sprint 6:
+	Tyler:
+		-Create a system to enable the pickup and dropoff locations to know their counterparts
+		-Click on a point to see its counterpart if it exists
+		-Add a secondary toolbar to add more configuration items *
+		-click a borough and query it for something
+		-add button to toggle the pickup and dropoff region query type *
+		-implement nearest point query *
+		-implement query for two locations
+	Tom:
+		-Finish the line query to essentially query a street
+		-Create the query to take a pickup and dropoff region to satisfy the software requirements
+	Brendan:
+		-Finish bar chart
+		-Work on documentation
+	Bill:
+		-Finish pi chart
+		-Work on documentation
+
+Sprint 5:
+	Tyler:
+		-Implement the C# code to interface with the new queries that Tom writes and connect it with the front end as well
+		-Extend front end as necessary, other things to be added as I do them... 
+	Bill:
+		-Create chart using d3 - pie chart for passenger count for all trips
+	Brendan:
+		-Create chart using d3 - bar chart for trip cost
+	Tom:
+		-Complete the Line query to display trips that cross a line drawn 
+		-Complete the circle query so that we can query for circles as well as polygons
+		-Work on the line query to display points on a polyline as well
+		-Clean up the data if needed (optional)
+
+== Tasks completed in the third and fourth sprints are described in the changelog and in the documents submitted as reports == 
 
 Sprint 2: 9.18.15 - 10.01.15
 	Tyler: 

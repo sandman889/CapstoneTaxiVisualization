@@ -163,6 +163,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TaxiData.edmx</DependentUpon>
     </Compile>
+    <Compile Include="TwoRegionQueryPoly_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\d3.parcoords.css" />

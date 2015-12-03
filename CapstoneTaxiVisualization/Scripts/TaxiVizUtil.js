@@ -4,6 +4,8 @@
     boroughs: {},
     currentLayers: [],
     currentData: {},
+    isDualSelect: false,
+    dualSelectLayer: null,
     //function that will call the server to execute the stored proc
     //for the region query display
     RegionQueryDisplay: function (data, map) {
@@ -65,6 +67,53 @@
                 startDate: $("#startDate").val(),
                 endDate: $("#endDate").val(),
                 linePoints: data
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    NearestPointQueryDisplay: function (data, map) {
+        var toolbar = $("#toolbar").data("kendoToolBar");
+        var selected = toolbar.getSelectedFromGroup("pointsToQuery");
+
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetNearestPoint",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                point: data[0],
+                queryFor: Number(selected.attr("value"))
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    DualRegionDisplay: function(regionOne, regionTwo, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/DualRegionQuery",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                regionOnePoints: regionOne,
+                regionTwoPoints: regionTwo
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -288,6 +337,13 @@
 
             //add the polygon to the map
             var polyLayer = L.polygon(vertices, { color: shapeColor });
+
+            polyLayer.on("click", function (e) {
+                var boundPoints = TaxiVizUtil.BuildFormattedLatLong(this.toGeoJSON(), true);
+
+               // TaxiVizUtil.RegionQueryDisplay(boundPoints, map);
+            });
+
             polyLayer.addTo(map);
 
             //keep track of the layer to remove it
@@ -300,26 +356,7 @@
         var popupHeight = Number($(document).height()) * 0.8;
         var popupWidth = Number($(document).width()) * 0.7;
 
-        $("#mainContent").append("<div id='parcoords' class='parcoords' style='width:" + popupWidth + "px;height:" + popupHeight + "px'></div>");
-
-        var window = $("#parcoords");
-
-        //if the window doesn't actually exist, let's create it
-        if (!window.data("kendoWindow")) {
-            window.kendoWindow({
-                title: "Parallel Coordinates:",
-                close: function (e) {
-                    $(this.element).remove();
-                },
-                resize: function (e) {
-                    $(this.element).height(this.size.height - 50);
-                    $(this.element).width(this.size.width - 50);
-                }
-            });
-        }
-
-        //open the window and set the content to that defined above for the element
-        window.data("kendoWindow").center().open();
+        $("#mainContent").append("<div id='parcoords' class='parcoords'></div>");
 
         //create color scale
         var colorScale = d3.scale.linear()
@@ -361,10 +398,6 @@
                 if (exploring[d]) d3.timer(explore(d, exploreCount));
             });
 
-        $("#parcoords").resize(function () {
-            pc.autoscale();
-        });
-
         function explore(dimension, count) {
             if (!exploreStart) {
                 exploreStart = true;
@@ -389,6 +422,28 @@
                 );
             };
         }
+
+        var window = $("#parcoords");
+
+        //if the window doesn't actually exist, let's create it
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                title: "Parallel Coordinates:",
+                height: popupHeight,
+                width: popupWidth,
+                close: function (e) {
+                    $(this.element).remove();
+                },
+                resize: function (e) {
+                    pc.height(Number(this._size.height));
+                    pc.width(Number(this._size.width));
+                    pc.data(data);
+                }
+            });
+        }
+
+        //open the window and set the content to that defined above for the element
+        window.data("kendoWindow").center().open();
     },
 
     DrawPieChart: function (data) {
@@ -456,8 +511,6 @@
                 .text(function (d) { return d.data.age; });
 
         });
-
-        //window.data("kendoWindow").contents(svg.html);
     },
 
     DrawBarChart: function (data) {
@@ -506,6 +559,14 @@
             .text(function (d) { return d; });
 
         window.data("kendoWindow").content(chart.html);
+
+    },
+
+    ToggleDualSelect: function () {
+        TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
+    },
+
+    DrawParallelCoords: function () {
 
     }
 }
