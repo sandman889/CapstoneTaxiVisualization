@@ -46,6 +46,23 @@ namespace CapstoneTaxiVisualization
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LinesIntersectionQuery_Result>("LinesIntersectionQuery", startDateTimeParameter, endDateTimeParameter, lineStringAsTextParameter);
         }
     
+        public virtual ObjectResult<LineWithVolume_Result> LineWithVolume(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string lineStringAsText)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var lineStringAsTextParameter = lineStringAsText != null ?
+                new ObjectParameter("lineStringAsText", lineStringAsText) :
+                new ObjectParameter("lineStringAsText", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<LineWithVolume_Result>("LineWithVolume", startDateTimeParameter, endDateTimeParameter, lineStringAsTextParameter);
+        }
+    
         public virtual ObjectResult<NearestPointQuery_Result> NearestPointQuery(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string pointAsText, Nullable<int> pickDropBoth)
         {
             var startDateTimeParameter = startDateTime.HasValue ?

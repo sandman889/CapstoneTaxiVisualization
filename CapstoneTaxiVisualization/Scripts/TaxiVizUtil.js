@@ -5,6 +5,7 @@
     currentLayers: [],
     currentData: {},
     isDualSelect: false,
+    isOnLine: false,
     dualSelectLayer: null,
     //function that will call the server to execute the stored proc
     //for the region query display
@@ -114,6 +115,27 @@
                 endDate: $("#endDate").val(),
                 regionOnePoints: regionOne,
                 regionTwoPoints: regionTwo
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    OnLineQueryDisplay: function(data, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetTripsOnLine",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                linePoints: data
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -566,7 +588,7 @@
         TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
     },
 
-    DrawParallelCoords: function () {
-
+    ToggleOnLineQuery: function() {
+        TaxiVizUtil.isOnLine = !TaxiVizUtil.isOnLine;
     }
 }
