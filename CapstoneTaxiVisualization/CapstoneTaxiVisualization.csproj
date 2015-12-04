@@ -136,6 +136,9 @@
     <Compile Include="LinesIntersectionQuery_Result.cs">
       <DependentUpon>TaxiData.tt</DependentUpon>
     </Compile>
+    <Compile Include="LineWithVolume_Result.cs">
+      <DependentUpon>TaxiData.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LatLong.cs" />
     <Compile Include="Models\QueryDto.cs" />
     <Compile Include="NearestPointQuery_Result.cs">

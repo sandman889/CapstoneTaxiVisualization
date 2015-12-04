@@ -69,6 +69,15 @@
             TaxiVizUtil.dualSelectLayer = null;
         }
 
+        else if (TaxiVizUtil.isOnLine && type == 'polyline') {
+            var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
+
+            TaxiVizUtil.OnLineQueryDisplay(correctedPoints, map);
+
+            drawnItems.addLayer(layer);
+            TaxiVizUtil.currentLayers.push(layer);
+        }
+
         else {
             if (type == 'polygon' || type == 'rectangle') {
                 //grab the points from the polygon, and format them correctly to send to the server
@@ -81,7 +90,7 @@
                 TaxiVizUtil.currentLayers.push(layer);
             }
             else if (type == 'polyline') {
-                //code to account for line being drawn
+                //code to account for line being drawn, defaults to line intersection display
                 var test = layer.toGeoJSON();
                 var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
 
@@ -101,6 +110,7 @@
                 TaxiVizUtil.currentLayers.push(layer);
             }
             else if (type == "marker") {
+                //code to account for a marker being placed which is the nearest point query
                 var point = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
 
                 TaxiVizUtil.NearestPointQueryDisplay(point, map);
@@ -135,7 +145,9 @@
                ]
            },
             { type: "separator" },
-            { type: "button", text: "Toggle Dual Select", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleDualSelect(); } }
+            { type: "button", text: "Toggle Dual Select", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleDualSelect(); } },
+            { type: "separator" },
+            { type: "button", text: "Trip On Line Query", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleOnLineQuery(); } }
         ]
     });
 
