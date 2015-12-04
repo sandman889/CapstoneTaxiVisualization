@@ -69,10 +69,10 @@
             TaxiVizUtil.dualSelectLayer = null;
         }
 
-        else if (TaxiVizUtil.isOnLine && type == 'polyline') {
+        else if (TaxiVizUtil.isIntersection && type == 'polyline') {
             var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
 
-            TaxiVizUtil.OnLineQueryDisplay(correctedPoints, map);
+            TaxiVizUtil.LineIntersectionDisplay(correctedPoints, map);
 
             drawnItems.addLayer(layer);
             TaxiVizUtil.currentLayers.push(layer);
@@ -94,7 +94,7 @@
                 var test = layer.toGeoJSON();
                 var correctedPoints = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false);
 
-                TaxiVizUtil.LineIntersectionDisplay(correctedPoints, map);
+                TaxiVizUtil.OnLineQueryDisplay(correctedPoints, map);
 
                 drawnItems.addLayer(layer);
                 TaxiVizUtil.currentLayers.push(layer);
@@ -147,7 +147,7 @@
             { type: "separator" },
             { type: "button", text: "Toggle Dual Select", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleDualSelect(); } },
             { type: "separator" },
-            { type: "button", text: "Trip On Line Query", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleOnLineQuery(); } }
+            { type: "button", text: "Toggle Trip Line Cross", togglable: true, toggle: function (e) { TaxiVizUtil.ToggleIntersectionQuery(); } }
         ]
     });
 

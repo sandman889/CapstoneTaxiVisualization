@@ -5,7 +5,7 @@
     currentLayers: [],
     currentData: {},
     isDualSelect: false,
-    isOnLine: false,
+    isIntersection: false,
     dualSelectLayer: null,
     //function that will call the server to execute the stored proc
     //for the region query display
@@ -588,7 +588,7 @@
         TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
     },
 
-    ToggleOnLineQuery: function() {
-        TaxiVizUtil.isOnLine = !TaxiVizUtil.isOnLine;
+    ToggleIntersectionQuery: function() {
+        TaxiVizUtil.isIntersection = !TaxiVizUtil.isIntersection;
     }
 }
