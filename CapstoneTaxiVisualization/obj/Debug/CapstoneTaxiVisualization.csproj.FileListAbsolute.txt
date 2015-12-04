@@ -84,3 +84,45 @@ D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\Capston
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.dll
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.pdb
 D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.csprojResolveAssemblyReference.cache
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\CapstoneTaxiVisualization.dll.config
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\CapstoneTaxiVisualization.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\CapstoneTaxiVisualization.pdb
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Antlr3.Runtime.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\EntityFramework.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\EntityFramework.SqlServer.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Microsoft.SqlServer.Types.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Newtonsoft.Json.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Owin.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Helpers.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Mvc.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Optimization.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Razor.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.Razor.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\WebGrease.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\EntityFramework.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\EntityFramework.SqlServer.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Helpers.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Mvc.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Razor.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.WebPages.Razor.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\System.Web.Optimization.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Newtonsoft.Json.xml
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\Antlr3.Runtime.pdb
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\de\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\es\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\fr\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\it\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\ja\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\ko\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\pt\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\ru\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\zh-Hans\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\bin\zh-Hant\Microsoft.SqlServer.Types.resources.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.csprojResolveAssemblyReference.cache
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.dll
+C:\Users\Bill\Documents\GitHubVisualStudio\CapstoneTaxiVisualization\CapstoneTaxiVisualization\obj\Debug\CapstoneTaxiVisualization.pdb
