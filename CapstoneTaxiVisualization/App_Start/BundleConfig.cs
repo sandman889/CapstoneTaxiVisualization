@@ -27,6 +27,7 @@ namespace CapstoneTaxiVisualization
                     "~/Scripts/kendo.all.min.js",
                     "~/Scripts/map/NewYorkBoroughs.js",
                     "~/Scripts/d3.parcoords.js",
+                    "~/Scripts/d3.legend.js",
                     "~/Scripts/DemoChartData.js"
                 ));
 

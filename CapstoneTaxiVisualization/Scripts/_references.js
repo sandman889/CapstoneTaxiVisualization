@@ -40,3 +40,4 @@
 /// <reference path="kendo.all.min.js" />
 /// <reference path="map/newyorkboroughs.js" />
 /// <reference path="d3.parcoords.js" />
+/// <reference path="d3.legend.js" />

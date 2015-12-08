@@ -46,25 +46,40 @@
             layer = e.layer;
 
 
-        if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer == null && (type == 'polygon' || type == 'rectangle')) {
+        if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer == null && (type == 'polygon' || type == 'rectangle' || type == 'circle')) {
             //save the layer for later and add it to the map
             TaxiVizUtil.currentLayers.push(layer);
             TaxiVizUtil.dualSelectLayer = layer;
             drawnItems.addLayer(layer);
         }
         
-        else if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer != null && (type == 'polygon' || type == 'rectangle')) {
-            //create the corrected points for each one of the layers
-            var polygonPointsOne = TaxiVizUtil.BuildFormattedLatLong(TaxiVizUtil.dualSelectLayer.toGeoJSON(), true);
-            var polygonPointsTwo = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), true);
+        else if (TaxiVizUtil.isDualSelect && TaxiVizUtil.dualSelectLayer != null && (type == 'polygon' || type == 'rectangle' || type == 'circle')) {
+            if (type == 'polygon' || type == 'rectangle') {
+                //create the corrected points for each one of the layers
+                var polygonPointsOne = TaxiVizUtil.BuildFormattedLatLong(TaxiVizUtil.dualSelectLayer.toGeoJSON(), true);
+                var polygonPointsTwo = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), true);
 
-            //fire off the server code to grab and display the points
-            TaxiVizUtil.DualRegionDisplay(polygonPointsOne, polygonPointsTwo, map);
+                //fire off the server code to grab and display the points
+                TaxiVizUtil.DualRegionDisplay(polygonPointsOne, polygonPointsTwo, map);
 
-            TaxiVizUtil.dualSelectLayer = layer;
-            drawnItems.addLayer(layer);
-            TaxiVizUtil.currentLayers.push(layer);
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
+            else {
+                //build the data for the first circle
+                var circleCentroidOne = TaxiVizUtil.BuildFormattedLatLong(TaxiVizUtil.dualSelectLayer.toGeoJSON(), false)[0];
+                var radiusOne = TaxiVizUtil.dualSelectLayer.getRadius();
 
+                //build data for the second circle
+                var circleCentroidTwo = TaxiVizUtil.BuildFormattedLatLong(layer.toGeoJSON(), false)[0];
+                var radiusTwo = layer.getRadius();
+
+                //kick off the query and the display
+                TaxiVizUtil.DualCircleRegionDisplay(circleCentroidOne, radiusOne, circleCentroidTwo, radiusTwo, map);
+
+                drawnItems.addLayer(layer);
+                TaxiVizUtil.currentLayers.push(layer);
+            }
             //reset the initial layer 
             TaxiVizUtil.dualSelectLayer = null;
         }
@@ -130,18 +145,18 @@
             {
                 type: "buttonGroup",
                 buttons: [
-                    { type: "button", group: "pointsToQuery", togglable: true, text: "Query Pickup", attributes: { "value": "0" }, selected: true },
-                    { type: "button", group: "pointsToQuery", togglable: true, text: "Query Dropoff", attributes: { "value": "1" } },
-                    { type: "button", group: "pointsToQuery", togglable: true, text: "Query Both", attributes: { "value": "2" } }
+                    { type: "button", group: "pointsToQuery", id: "queryPickupToggle", togglable: true, text: "Query Pickup", attributes: { "value": "0" }, selected: true },
+                    { type: "button", group: "pointsToQuery", id: "queryDropoffToggle", togglable: true, text: "Query Dropoff", attributes: { "value": "1" } },
+                    { type: "button", group: "pointsToQuery", id: "queryBothToggle", togglable: true, text: "Query Both", attributes: { "value": "2" } }
                 ]
             },
            { type: "separator" },
            {
                type: "buttonGroup",
                buttons: [
-                   { type: "button", group: "pointsToDisplay", togglable: true, text: "Display Pickup", attributes: { "value": "pickups" }, selected: true },
-                   { type: "button", group: "pointsToDisplay", togglable: true, text: "Display Dropoff", attributes: { "value": "dropoffs" } },
-                   { type: "button", group: "pointsToDisplay", togglable: true, text: "Display Both", attributes: { "value": "both" } }
+                   { type: "button", group: "pointsToDisplay", id: "displayPickupToggle", togglable: true, text: "Display Pickup", attributes: { "value": "pickups" }, selected: true },
+                   { type: "button", group: "pointsToDisplay", id: "displayDropoffToggle", togglable: true, text: "Display Dropoff", attributes: { "value": "dropoffs" } },
+                   { type: "button", group: "pointsToDisplay", id: "displayBothToggle", togglable: true, text: "Display Both", attributes: { "value": "both" } }
                ]
            },
             { type: "separator" },

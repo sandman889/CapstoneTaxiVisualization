@@ -134,6 +134,35 @@ namespace CapstoneTaxiVisualization
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<RegionQueryPoly_Result>("RegionQueryPoly", startDateTimeParameter, endDateTimeParameter, polygonAsTextParameter, pickDropBothParameter);
         }
     
+        public virtual ObjectResult<TwoRegionQueryCircle_Result> TwoRegionQueryCircle(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, Nullable<double> distanceInMeters, string centroidOneAsText, Nullable<double> distanceInMeters2, string centroidTwoAsText)
+        {
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("startDateTime", startDateTime) :
+                new ObjectParameter("startDateTime", typeof(System.DateTime));
+    
+            var endDateTimeParameter = endDateTime.HasValue ?
+                new ObjectParameter("endDateTime", endDateTime) :
+                new ObjectParameter("endDateTime", typeof(System.DateTime));
+    
+            var distanceInMetersParameter = distanceInMeters.HasValue ?
+                new ObjectParameter("distanceInMeters", distanceInMeters) :
+                new ObjectParameter("distanceInMeters", typeof(double));
+    
+            var centroidOneAsTextParameter = centroidOneAsText != null ?
+                new ObjectParameter("centroidOneAsText", centroidOneAsText) :
+                new ObjectParameter("centroidOneAsText", typeof(string));
+    
+            var distanceInMeters2Parameter = distanceInMeters2.HasValue ?
+                new ObjectParameter("distanceInMeters2", distanceInMeters2) :
+                new ObjectParameter("distanceInMeters2", typeof(double));
+    
+            var centroidTwoAsTextParameter = centroidTwoAsText != null ?
+                new ObjectParameter("centroidTwoAsText", centroidTwoAsText) :
+                new ObjectParameter("centroidTwoAsText", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<TwoRegionQueryCircle_Result>("TwoRegionQueryCircle", startDateTimeParameter, endDateTimeParameter, distanceInMetersParameter, centroidOneAsTextParameter, distanceInMeters2Parameter, centroidTwoAsTextParameter);
+        }
+    
         public virtual ObjectResult<TwoRegionQueryPoly_Result> TwoRegionQueryPoly(Nullable<System.DateTime> startDateTime, Nullable<System.DateTime> endDateTime, string polygonAsText, string polygonAsText2)
         {
             var startDateTimeParameter = startDateTime.HasValue ?
