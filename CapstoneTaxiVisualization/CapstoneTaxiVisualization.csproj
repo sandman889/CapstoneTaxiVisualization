@@ -131,40 +131,46 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Identity_Smaller.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="LinesIntersectionQuery_Result.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LineWithVolume_Result.cs">
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LatLong.cs" />
     <Compile Include="Models\QueryDto.cs" />
     <Compile Include="NearestPointQuery_Result.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionQueryCircle_Result.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="RegionQueryPoly_Result.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="TaxiData.Context.cs">
+    <Compile Include="TaxiDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>TaxiData.Context.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="TaxiData.cs">
+    <Compile Include="TaxiDataModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="TaxiData.Designer.cs">
+    <Compile Include="TaxiDataModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>TaxiData.edmx</DependentUpon>
+      <DependentUpon>TaxiDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="TwoRegionQueryCircle_Result.cs">
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="TwoRegionQueryPoly_Result.cs">
-      <DependentUpon>TaxiData.tt</DependentUpon>
+      <DependentUpon>TaxiDataModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -548,9 +554,9 @@
     <Content Include="Content\kendo\fonts\glyphs\KendoUIGlyphs.woff" />
     <Content Include="Content\kendo\images\kendoui.ttf" />
     <Content Include="Content\kendo\images\kendoui.woff" />
+    <Content Include="Scripts\d3.legend.js" />
     <Content Include="Scripts\d3.parcoords.js" />
     <Content Include="Scripts\InterfaceInitialization.js" />
-    <Content Include="Scripts\data.csv" />
     <None Include="Scripts\jquery\jquery-2.1.0-vsdoc.js" />
     <None Include="Scripts\jquery\jquery-2.1.0.intellisense.js" />
     <Content Include="Scripts\jquery\jquery-2.1.0.js" />
@@ -614,22 +620,22 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery\jquery-2.1.0.min.map" />
-    <EntityDeploy Include="TaxiData.edmx">
+    <EntityDeploy Include="TaxiDataModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>TaxiData.Designer.cs</LastGenOutput>
+      <LastGenOutput>TaxiDataModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="TaxiData.Context.tt">
+    <Content Include="TaxiDataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>TaxiData.edmx</DependentUpon>
-      <LastGenOutput>TaxiData.Context.cs</LastGenOutput>
+      <DependentUpon>TaxiDataModel.edmx</DependentUpon>
+      <LastGenOutput>TaxiDataModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="TaxiData.edmx.diagram">
-      <DependentUpon>TaxiData.edmx</DependentUpon>
+    <Content Include="TaxiDataModel.edmx.diagram">
+      <DependentUpon>TaxiDataModel.edmx</DependentUpon>
     </Content>
-    <Content Include="TaxiData.tt">
+    <Content Include="TaxiDataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>TaxiData.edmx</DependentUpon>
-      <LastGenOutput>TaxiData.cs</LastGenOutput>
+      <DependentUpon>TaxiDataModel.edmx</DependentUpon>
+      <LastGenOutput>TaxiDataModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

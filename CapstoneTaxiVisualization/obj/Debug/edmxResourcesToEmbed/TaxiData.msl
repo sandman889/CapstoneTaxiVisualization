@@ -42,6 +42,25 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="LineWithVolume" FunctionName="TaxiDataModel.Store.LineWithVolume">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="TaxiDataModel.LineWithVolume_Result">
+          <ScalarProperty Name="pickup_datetime" ColumnName="pickup_datetime" />
+          <ScalarProperty Name="pickup_longitude" ColumnName="pickup_longitude" />
+          <ScalarProperty Name="pickup_latitude" ColumnName="pickup_latitude" />
+          <ScalarProperty Name="dropoff_datetime" ColumnName="dropoff_datetime" />
+          <ScalarProperty Name="dropoff_longitude" ColumnName="dropoff_longitude" />
+          <ScalarProperty Name="dropoff_latitude" ColumnName="dropoff_latitude" />
+          <ScalarProperty Name="passenger_count" ColumnName="passenger_count" />
+          <ScalarProperty Name="trip_time_in_secs" ColumnName="trip_time_in_secs" />
+          <ScalarProperty Name="trip_distance" ColumnName="trip_distance" />
+          <ScalarProperty Name="fare_amount" ColumnName="fare_amount" />
+          <ScalarProperty Name="tip_amount" ColumnName="tip_amount" />
+          <ScalarProperty Name="tolls_amount" ColumnName="tolls_amount" />
+          <ScalarProperty Name="total_amount" ColumnName="total_amount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="NearestPointQuery" FunctionName="TaxiDataModel.Store.NearestPointQuery">
       <ResultMapping>
         <ComplexTypeMapping TypeName="TaxiDataModel.NearestPointQuery_Result">

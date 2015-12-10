@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\TaxiData.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\Storage\Documents\School\Fall 2015\Capstone\CapstoneTaxiVisualization\CapstoneTaxiVisualization\TaxiDataModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

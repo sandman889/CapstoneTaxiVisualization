@@ -1,4 +1,20 @@
 TASKS:
+Sprint 7:
+	Tyler: 
+		-Complete the half of the programmers guide that deals with the server and client side code
+		-Finish adding queries Tom has created to C# and add them to the interface
+		-Make it so that when dual select mode is active some UI elements are inactive
+		-Any last minute cleanup
+		-Add legend to pie chart
+	Tom:
+		-Finish any database work
+		-Work on the half of the programmers guide dealing with the database
+	Brendan:
+		-Finish bar chart
+		-Work on half of the user guide
+	Bill:
+		-Finish pie chart
+		-Work on half of the user guide
 Sprint 6:
 	Tyler:
 		-Create a system to enable the pickup and dropoff locations to know their counterparts

@@ -5,6 +5,7 @@
     currentLayers: [],
     currentData: {},
     isDualSelect: false,
+    isIntersection: false,
     dualSelectLayer: null,
     //function that will call the server to execute the stored proc
     //for the region query display
@@ -114,6 +115,51 @@
                 endDate: $("#endDate").val(),
                 regionOnePoints: regionOne,
                 regionTwoPoints: regionTwo
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    DualCircleRegionDisplay: function(centroidOne, radiusOne, centroidTwo, radiusTwo, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/DualRegionQueryCircle",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                pointOne: centroidOne,
+                radiusOne: radiusOne,
+                pointTwo: centroidTwo,
+                radiusTwo: radiusTwo
+            },
+            success: function (response) {
+                var parsedJson = JSON.parse(response);
+                TaxiVizUtil.currentData = parsedJson;
+                TaxiVizUtil.DrawCircles(parsedJson, map);
+                TaxiVizUtil.CreateFloatingInfo(parsedJson);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                window.alert(xhr.responseText)
+            }
+        });
+    },
+
+    OnLineQueryDisplay: function(data, map) {
+        $.ajax({
+            type: "POST",
+            url: window.location.protocol + "//" + window.location.hostname + "/CapstoneTaxiVisualization/Home/GetTripsOnLine",
+            data: {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val(),
+                linePoints: data
             },
             success: function (response) {
                 var parsedJson = JSON.parse(response);
@@ -442,7 +488,7 @@
             });
         }
 
-        //open the window and set the content to that defined above for the element
+        //open the window and center it
         window.data("kendoWindow").center().open();
     },
 
@@ -455,7 +501,7 @@
         //if the window doesn't actually exist, let's create it
         if (!window.data("kendoWindow")) {
             window.kendoWindow({
-                title: "Pie Chart:",
+                title: "Pie Chart: Passengers per Trip",
                 close: function (e) {
                     $(this.element).remove();
                 }
@@ -465,52 +511,70 @@
         //open the window
         window.data("kendoWindow").center().open();
 
-        //BILL WRITE CODE HERE
-        var thisIsYourChart = $("#pieChart");
+        var width = 800,
+             height = 500,
+             radius = Math.min(width, height) / 2;
 
-        var width = 960,
-		    height = 500,
-		    radius = Math.min(width, height) / 2;
+        //build up the data object so that we can pass it to the pie
+        var pieData = [];
+        TaxiVizUtil.currentData.forEach(function (d) {
+            var temp = { label: "", value: 0 };
+            var found = false;
 
-        var color = d3.scale.ordinal()
-		    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+            for (var i = 0; i < pieData.length; ++i) {
+                if (pieData[i].label == d.NumOfPassenger) {
+                    pieData[i].value++;
+                    found = true;
+                }
+            }
 
-        var arc = d3.svg.arc()
-		    .outerRadius(radius - 10)
-		    .innerRadius(0);
+            if (!found) {
+                temp.label = d.NumOfPassenger;
+                temp.value = 1;
+                pieData.push(temp);
+            }
+        });
 
-        var pie = d3.layout.pie()
-		    .sort(null)
-		    .value(function (d) { return d.population; });
+        var color = d3.scale.category20c();
+        var vis = d3.select('#pieChart')
+            .append("svg:svg")
+            .data([pieData])
+            .attr("width", width)
+            .attr("height", height)
+            .append("svg:g")
+            .attr("transform", "translate(" + radius + "," + radius + ")");
 
-        var svg = d3.select("#pieChart").append("svg")
-		    .attr("width", width)
-		    .attr("height", height)
-		  .append("g")
-		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var pie = d3.layout.pie().value(function (d) { return d.value; }).sort(function (a, b) { return b.value - a.value; });;
 
-        d3.csv("Scripts/data.csv", function (error, data) {
+        // declare an arc generator function
+        var arc = d3.svg.arc().outerRadius(radius);
 
-            data.forEach(function (d) {
-                d.population = +d.population;
+        // select paths, use arc generator to draw
+        var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+        arcs.append("svg:path")
+            .attr("fill", function (d, i) {
+                return color(i);
+            })
+            .attr("d", function (d) {
+                return arc(d);
+            })
+            .classed("slice", true)
+            .attr("data-legend", function (d) {
+                return d.data.label + " passenger(s)";
+            })
+            .attr("data-legend-pos", function(d) {
+                return Number(d.data.label);
             });
 
-            var g = svg.selectAll(".arc")
-                .data(pie(data))
-              .enter().append("g")
-                .attr("class", "arc");
-
-            g.append("path")
-                .attr("d", arc)
-                .style("fill", function (d) { return color(d.data.age); });
-
-            g.append("text")
-                .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-                .attr("dy", ".35em")
-                .style("text-anchor", "middle")
-                .text(function (d) { return d.data.age; });
-
-        });
+        //add the legend to the chart
+        var legend = vis.append("g")
+                .attr("class", "legend")
+                .attr("transform", "translate(300,30)")
+                .style("font-size", "16px")
+                .call(d3.legend);
+        
+        //center and open the window
+        window.data("kendoWindow").center().open();
     },
 
     DrawBarChart: function (data) {
@@ -524,49 +588,40 @@
             });
         }
 
+
+
         //open the window
         window.data("kendoWindow").center().open();
-
-
-        var data = [4, 8, 15, 16, 23, 42];
-        console.log(TaxiVizUtil.currentData);
-
-
-        var width = 420;
-        var barHeight = 20;
-
-        var x = d3.scale.linear()
-            .domain([0, d3.max(data)])
-            .range([0, width]);
-
-        var chart = d3.select("#barChart")
-            .attr("width", width)
-            .attr("height", barHeight * data.length);
-
-        var bar = chart.selectAll("g")
-            .data(data)
-            .enter().append("g")
-            .attr("transform", function (d, i) { return "translate(0," + i * barHeight + ")"; });
-
-        bar.append("rect")
-            .attr("width", x)
-            .attr("height", barHeight - 1);
-
-        bar.append("text")
-            .attr("x", function (d) { return x(d) - 3; })
-            .attr("y", barHeight / 2)
-            .attr("dy", ".35em")
-            .text(function (d) { return d; });
-
-        window.data("kendoWindow").content(chart.html);
-
     },
 
     ToggleDualSelect: function () {
         TaxiVizUtil.isDualSelect = !TaxiVizUtil.isDualSelect;
+        
+        //select the toolbar to operate on the buttons we need
+        var toolbar = $("#toolbar").data("kendoToolBar");
+
+        //disable all of the query for buttons, they are not needed if the dual select is 
+        //true, if false we can use them
+        toolbar.enable("#queryPickupToggle", !TaxiVizUtil.isDualSelect);
+        toolbar.enable("#queryDropoffToggle", !TaxiVizUtil.isDualSelect);
+        toolbar.enable("#queryBothToggle", !TaxiVizUtil.isDualSelect);
+
+        //disable the display buttons as well if the dual select is active
+        toolbar.enable("#displayPickupToggle", !TaxiVizUtil.isDualSelect);
+        toolbar.enable("#displayDropoffToggle", !TaxiVizUtil.isDualSelect);
+        //toolbar.enable("#displayBothToggle", !TaxiVizUtil.isDualSelect);
+
+        //select the display both toggle button if the dual select is turned on 
+        //otherwise set the default of the display pickup
+        if (TaxiVizUtil.isDualSelect) {
+            toolbar.toggle("#displayBothToggle", true);
+        }
+        else {
+            toolbar.toggle("#displayPickupToggle", true);
+        }
     },
 
-    DrawParallelCoords: function () {
-
+    ToggleIntersectionQuery: function() {
+        TaxiVizUtil.isIntersection = !TaxiVizUtil.isIntersection;
     }
 }
