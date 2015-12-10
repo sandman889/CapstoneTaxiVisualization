@@ -1,4 +1,12 @@
 CHANGELOG:
+  12.10.2015:
+    -UI reworked again and in its final state, functional on all reasonable screen sizes
+    -Dual region query implemented for rectangles, polygons, and circles
+    -Trip on line query implemented that will get all trips with pickup/dropoff on the line drawn
+    -Nearest point query implemented using Leaflet's marker 
+    -Parallel coordinates chart slightly modified and made better
+    -Pie chart completed to visualize passenger count
+    -Application essentially finished aside from what we would like to do in the future
   11.19.2015:
     -UI redone to be more functional on different sized screens
     -Line, circle and nearest point query completed in SQL

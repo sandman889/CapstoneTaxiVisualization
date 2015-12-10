@@ -39,7 +39,6 @@ CREATE TABLE [dbo].[Trip_Data_Staging](
 	[dropoff_longitude] [varchar](20) NOT NULL,
 	[dropoff_latitude] [varchar](20) NOT NULL
 	CONSTRAINT PK_Data PRIMARY KEY (medallion, hack_license, vendor_id, pickup_datetime)
-
 ) ON [PRIMARY]
 
 GO
@@ -314,7 +313,7 @@ ALTER COLUMN [dropoff_latitude] [decimal](19, 10)
 --Now that the longitude and latitude columns are in [decimal](19, 10) we can do a range based delete
 --to only keep rows that have longitudes and latitudes that are somwhat near NYC
 --NYC: -74W by 40.5N  so range will be: -71 - -77W by 39 - 42N
--- My thought is that this is a reasonable bounding range lookin at a map
+-- My thought is that this is a reasonable bounding range looking at a map
 
 DELETE --SELECT COUNT(*) AS 'Longitude/Latitude Out of Range'
  
@@ -329,6 +328,122 @@ DECLARE @Longitude_Latitude_Out_Of_Range int
 SET @Longitude_Latitude_Out_Of_Range = @@ROWCOUNT
 
 SELECT @Longitude_Latitude_Out_Of_Range AS 'Longitude/Latitude Out Of Range'
+
+DELETE --SELECT COUNT(*) AS 'Pickup/Dropoff Same Position'
+ 
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [pickup_longitude] = [dropoff_longitude]
+AND [pickup_latitude] = [dropoff_latitude]
+
+DECLARE @Pickup_Dropoff_Same_Position int
+SET @Pickup_Dropoff_Same_Position = @@ROWCOUNT
+
+SELECT @Pickup_Dropoff_Same_Position AS 'Pickup/Dropoff Same Position'
+-- another 95360 rows deleted
+
+DELETE --SELECT COUNT(*) AS 'Zero Second Trips' 
+ 
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [trip_time_in_secs] = 0
+
+DECLARE @Zero_Second_Trips int
+SET @Zero_Second_Trips = @@ROWCOUNT
+
+SELECT @Zero_Second_Trips AS 'Zero Second Trips'
+-- another 9235 rows deleted
+
+DELETE --SELECT COUNT(*) AS 'Zero Second Trips' 
+ 
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [dropoff_datetime] - [pickup_datetime] = 0
+OR DATEDIFF(second, [pickup_datetime], [dropoff_datetime]) = 0
+
+DECLARE @Zero_Second_Trips_Date_Time int
+SET @Zero_Second_Trips_Date_Time = @@ROWCOUNT
+
+SELECT @Zero_Second_Trips_Date_Time AS 'Zero Second Trips'
+-- no rows from this one
+
+DELETE --SELECT COUNT(*) AS 'Trip Time Descrepancy' 
+
+FROM [Staging].[dbo].[Join_Staging]
+
+--DATEDIFF returns the diferential in seconds so can direcctly compare this to varchar
+WHERE DATEDIFF(second, [pickup_datetime], [dropoff_datetime]) > [trip_time_in_secs] + 4
+OR DATEDIFF(second, [pickup_datetime], [dropoff_datetime]) < [trip_time_in_secs] - 4
+
+DECLARE @Trip_Time_Descrepancy int
+SET @Trip_Time_Descrepancy = @@ROWCOUNT
+
+SELECT @Trip_Time_Descrepancy AS 'Trip Time Descrepancy'
+--another 8766 rows if off by more than 5 seconds either way
+-- this number slowly decreases as the range increases, since millions of rows are within 1 second this is the range I picked for data becoming inacurate
+
+DELETE --SELECT COUNT(*) AS 'Trip Over A Day' 
+
+FROM [Staging].[dbo].[Join_Staging]
+
+--DATEDIFF returns the diferential in seconds so can direcctly compare this to varchar
+WHERE DATEDIFF(second, [pickup_datetime], [dropoff_datetime]) > 86400 --number of seconds in a day
+
+DECLARE @Trip_Over_A_Day int
+SET @Trip_Over_A_Day = @@ROWCOUNT
+
+SELECT @Trip_Over_A_Day AS 'Trip Over A Day'
+-- the above select took care of these descrepancies as well
+
+
+DELETE --SELECT * --COUNT(*) AS 'Trip To Short Time' 
+
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [trip_time_in_secs] < 5
+
+DECLARE @Trip_To_Short_Time int
+SET @Trip_To_Short_Time = @@ROWCOUNT
+
+SELECT @Trip_To_Short_Time AS 'Trip To Short Time'
+--another 4192 rows
+
+DELETE --SELECT COUNT(*) AS 'Trip To Short Zero Distance' 
+
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [trip_distance] = '.00'
+
+DECLARE @Trip_To_Short_0_Distance int
+SET @Trip_To_Short_0_Distance = @@ROWCOUNT
+
+SELECT @Trip_To_Short_0_Distance AS 'Trip To Short Zero Distance'
+-- we already removed no change in pickup/dropoff position so there should be no zero distance left
+--another 28114 rows
+
+DELETE --SELECT COUNT(*) AS 'Impossible Average Speed'  
+
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE CAST([trip_distance] AS float) / CAST([trip_time_in_secs] AS float) > .02 --over 72 miles per hour average
+
+DECLARE @Impossible_Average_Speed int
+SET @Impossible_Average_Speed = @@ROWCOUNT
+
+SELECT @Impossible_Average_Speed AS 'Impossible Average Speed'
+--another 3791 rows
+
+DELETE --SELECT COUNT(*) AS 'Invalid Number Passengers'  
+
+FROM [Staging].[dbo].[Join_Staging]
+
+WHERE [passenger_count] = 0 OR [passenger_count] > 6
+
+DECLARE @Invalid_Number_Passengers int
+SET @Invalid_Number_Passengers = @@ROWCOUNT
+
+SELECT @Invalid_Number_Passengers AS 'Invalid Number Passengers'
+--another 41 rows
 
 --Should now be able to alter longitude and latitude columns to [decimal](9, 6) and NOT NULL
 
@@ -357,7 +472,7 @@ ALTER TABLE [Staging].[dbo].[Join_Staging]
 ALTER COLUMN [dropoff_latitude] [decimal](9, 6) NOT NULL
 
 --5) Create the final, slimmed down table (5 minutes)
---Create the table with minimal columns and identity column for clustered index
+--Create the table with identity column for clustered index
 
 SET ANSI_NULLS ON
 GO
@@ -368,8 +483,11 @@ GO
 SET ANSI_PADDING ON
 GO
 
-CREATE TABLE [dbo].[Identity_Smaller](
+CREATE TABLE [dbo].[Taxi_Data](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[medallion] [varchar](50) NOT NULL,
+	[hack_license] [varchar](50) NOT NULL,
+	[rate_code] [varchar](10) NOT NULL,
 	[pickup_datetime] [datetime] NOT NULL,
 	[dropoff_datetime] [datetime] NOT NULL,
 	[passenger_count] [varchar](10) NULL,
@@ -379,13 +497,16 @@ CREATE TABLE [dbo].[Identity_Smaller](
 	[pickup_latitude] [decimal](9,6) NOT NULL,
 	[dropoff_longitude] [decimal](9,6) NOT NULL,
 	[dropoff_latitude] [decimal](9,6) NOT NULL,
+	[payment_type] [varchar](10) NULL,
 	[fare_amount] [varchar](10) NULL,
+	[surcharge] [varchar](10) NULL,
+	[mta_tax] [varchar](10) NULL,
 	[tip_amount] [varchar](10) NULL,
 	[tolls_amount] [varchar](10) NULL,
 	[total_amount] [varchar](10) NULL,
 	[pickup_geolocation] [geography],
 	[dropoff_geolocation][geography]
-	CONSTRAINT PK_ID_CLUSTERED_10 PRIMARY KEY CLUSTERED
+	CONSTRAINT PK_ID_CLUSTERED PRIMARY KEY CLUSTERED
 	([ID] ASC),
 	INDEX IDX_PICKUP_NONCLUSTERED NONCLUSTERED
 	([pickup_datetime] ASC),
@@ -395,14 +516,14 @@ CREATE TABLE [dbo].[Identity_Smaller](
 
 CREATE SPATIAL INDEX SPATIAL_PICKUP
 
-ON [Staging].[dbo].[Identity_Smaller] ([pickup_geolocation])
+ON [Staging].[dbo].[Taxi_Data] ([pickup_geolocation])
 USING GEOGRAPHY_AUTO_GRID
 --USING GEOMETRY_GRID
 --WITH (BOUNDING_BOX = (XMIN=-77,YMIN=39,XMAX=-71,YMAX=42))
 
 CREATE SPATIAL INDEX SPATIAL_DROPOFF
 
-ON [Staging].[dbo].[Identity_Smaller] ([dropoff_geolocation])
+ON [Staging].[dbo].[Taxi_Data] ([dropoff_geolocation])
 USING GEOGRAPHY_AUTO_GRID
 --USING GEOMETRY_GRID
 --WITH (BOUNDING_BOX = (XMIN=-77,YMIN=39,XMAX=-71,YMAX=42))	
@@ -410,17 +531,19 @@ USING GEOGRAPHY_AUTO_GRID
  --insert certain columns from Join_Staging into this slimmed down
  --and differently indexed table
 
-INSERT INTO [Staging].[dbo].[Identity_Smaller]
+INSERT INTO [Staging].[dbo].[Taxi_Data]
 (
-[pickup_datetime], [dropoff_datetime], [passenger_count], [trip_time_in_secs], 
-[trip_distance], [pickup_longitude], [pickup_latitude], [dropoff_longitude], 
-[dropoff_latitude], [fare_amount], [tip_amount], [tolls_amount], [total_amount]
+[medallion], [hack_license], [rate_code], [pickup_datetime], [dropoff_datetime], 
+[passenger_count], [trip_time_in_secs], [trip_distance], [pickup_longitude], 
+[pickup_latitude], [dropoff_longitude], [dropoff_latitude], [payment_type], 
+[fare_amount], [surcharge], [mta_tax], [tip_amount], [tolls_amount], [total_amount]
 )
  
 SELECT 
-[pickup_datetime], [dropoff_datetime], [passenger_count], [trip_time_in_secs], 
-[trip_distance], [pickup_longitude], [pickup_latitude], [dropoff_longitude], 
-[dropoff_latitude], [fare_amount], [tip_amount], [tolls_amount], [total_amount]
+[medallion], [hack_license], [rate_code], [pickup_datetime], [dropoff_datetime], 
+[passenger_count], [trip_time_in_secs], [trip_distance], [pickup_longitude], 
+[pickup_latitude], [dropoff_longitude], [dropoff_latitude], [payment_type], 
+[fare_amount], [surcharge], [mta_tax], [tip_amount], [tolls_amount], [total_amount]
 
 FROM [Staging].[dbo].[Join_Staging]
 
@@ -428,7 +551,7 @@ FROM [Staging].[dbo].[Join_Staging]
 --build the geography type spatial indexes as we convert latitudes and longitudes
 --into data type geography
 
-UPDATE [Staging].[dbo].[Identity_Smaller]
+UPDATE [Staging].[dbo].[Taxi_Data]
 
 SET [pickup_geolocation] = [geography]::Point([pickup_latitude], [pickup_longitude], 4326)
 
@@ -436,7 +559,7 @@ WHERE [pickup_latitude] IS NOT NULL AND [pickup_longitude] IS NOT NULL
 
 --7) Build the geography type spatial index for pickup (40 minutes)
 
-UPDATE [Staging].[dbo].[Identity_Smaller]
+UPDATE [Staging].[dbo].[Taxi_Data]
 
 SET [dropoff_geolocation] = [geography]::Point([dropoff_latitude], [dropoff_longitude], 4326)
 
